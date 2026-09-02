@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { predictIimbUgAdmission } from "@/lib/iimb-ug/2027_31/predictor";
-import { loadActiveIimbUgSnapshot, persistIimbUgPrediction } from "@/lib/iimb-ug/persistence";
+import { loadActiveIimbUgSnapshot, persistIimbUgPrediction } from "@/lib/iimb-ug/persistence.sites";
 import { iimbUgPredictRequestSchema } from "@/validation/iimb-ug";
 
 export async function POST(request: Request) {
