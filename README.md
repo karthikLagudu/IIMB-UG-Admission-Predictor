@@ -19,8 +19,8 @@ Open `http://localhost:3000`.
 pnpm build
 ```
 
-## API
+## Deployment
 
-`POST /api/iimb-ug/predict` accepts a candidate profile and returns the admission-planning result.
+The app is configured for GitHub Pages through `.github/workflows/deploy-pages.yml`.
 
-This repository intentionally uses bundled policy/runtime data only. There is no database setup required.
+This repository intentionally uses bundled policy/runtime data only. There is no database or server API required.

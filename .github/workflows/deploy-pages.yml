@@ -35,11 +35,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Remove server-only routes from the static build
-        run: |
-          mv src/app/api .github-pages-api
-          mv src/app/admin .github-pages-admin
-
       - name: Build static predictor
         env:
           GITHUB_PAGES: "true"

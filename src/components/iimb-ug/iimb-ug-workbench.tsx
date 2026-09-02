@@ -88,26 +88,11 @@ export function IimbUgWorkbench() {
         throw new Error("Validation failed. Please correct the highlighted candidate data.");
       }
 
-      if (window.location.hostname.endsWith("github.io")) {
-        setResult(calculateStaticPrediction(
-          parsedRequest.data.candidate,
-          parsedRequest.data.calculationMode,
-          parsedRequest.data.targetFinalComposite,
-        ));
-        window.setTimeout(() => document.getElementById("ug-results")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
-        return;
-      }
-      const response = await fetch("/api/iimb-ug/predict", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(parsedRequest.data),
-      });
-      const payload = await response.json();
-      if (!response.ok) {
-        setIssues(payload.issues ?? []);
-        throw new Error(payload.error ?? "Prediction request failed.");
-      }
-      setResult(payload as PredictionResponse);
+      setResult(calculateStaticPrediction(
+        parsedRequest.data.candidate,
+        parsedRequest.data.calculationMode,
+        parsedRequest.data.targetFinalComposite,
+      ));
       window.setTimeout(() => document.getElementById("ug-results")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Prediction request failed.");
