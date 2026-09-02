@@ -1,0 +1,17 @@
+node_modules
+.next
+.next-dev
+.vinext
+dist
+out
+.wrangler
+coverage
+playwright-report
+test-results
+.env
+.env.local
+*.db
+*.db-journal
+.codex-tmp
+screenshots/.runtime
+*.tsbuildinfo
