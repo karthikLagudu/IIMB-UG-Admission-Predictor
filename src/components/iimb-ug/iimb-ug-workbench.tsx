@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import type {
   CalculationMode,
+  IimbUgCandidateDraft,
   IimbUgCandidateInput,
   IimbUgPolicyConfig,
   IimbUgPredictionResult,
@@ -10,7 +11,6 @@ import type {
 } from "@/types/iimb-ug";
 import {
   predictIimbUgAdmission,
-  SAMPLE_IIMB_UG_CANDIDATE,
 } from "@/lib/iimb-ug/2027_31/predictor";
 import {
   EMPTY_IIMB_UG_RUNTIME_DATA,
@@ -25,7 +25,6 @@ import { PrePiBreakdown } from "./prepi-breakdown";
 import { CallOutlookPanel } from "./call-outlook";
 import { PostPiBreakdown } from "./postpi-breakdown";
 import { SensitivityAnalysis } from "./sensitivity-analysis";
-import { ProgrammePreference } from "./programme-preference";
 import { ReadinessPanel } from "./readiness-panel";
 import { SourcesPanel } from "./sources-panel";
 
@@ -35,8 +34,46 @@ type PredictionResponse = IimbUgPredictionResult & {
   persistence: { persisted: boolean; runId: string | null; reason?: string };
 };
 
-function freshSample(): IimbUgCandidateInput {
-  return JSON.parse(JSON.stringify(SAMPLE_IIMB_UG_CANDIDATE)) as IimbUgCandidateInput;
+const REQUIRED_FIELD_MESSAGES: Record<string, { label: string; message: string }> = {
+  "candidate.dateOfBirth": { label: "Date of birth", message: "Enter a valid date of birth." },
+  "candidate.category": { label: "Category", message: "Select a category." },
+  "candidate.gender": { label: "Gender", message: "Select a gender." },
+  "candidate.class10OverallPercent": { label: "Class X overall %", message: "Enter the Class X overall percentage." },
+  "candidate.class10MathPercent": { label: "Class X Mathematics %", message: "Enter the Class X Mathematics percentage." },
+  "candidate.class12Status": { label: "Class XII status", message: "Select the Class XII status." },
+};
+
+function freshCandidate(): IimbUgCandidateDraft {
+  return {
+    dateOfBirth: "",
+    category: "",
+    pwd: false,
+    gender: "",
+    studiedMathClass11: false,
+    studiedMathClass12: false,
+    class12Status: "",
+  };
+}
+
+function withBlankAttemptsAsZero(candidate: IimbUgCandidateDraft) {
+  const varcCorrect = candidate.varcCorrect ?? 0;
+  const varcWrong = candidate.varcWrong ?? 0;
+  const lrCorrect = candidate.lrCorrect ?? 0;
+  const lrWrong = candidate.lrWrong ?? 0;
+  const qadiCorrect = candidate.qadiCorrect ?? 0;
+  const qadiWrong = candidate.qadiWrong ?? 0;
+  return {
+    ...candidate,
+    varcCorrect,
+    varcWrong,
+    varcUnattempted: Math.max(15 - varcCorrect - varcWrong, 0),
+    lrCorrect,
+    lrWrong,
+    lrUnattempted: Math.max(15 - lrCorrect - lrWrong, 0),
+    qadiCorrect,
+    qadiWrong,
+    qadiUnattempted: Math.max(30 - qadiCorrect - qadiWrong, 0),
+  };
 }
 
 function calculateStaticPrediction(
@@ -63,7 +100,7 @@ function calculateStaticPrediction(
 }
 
 export function IimbUgWorkbench() {
-  const [candidate, setCandidate] = useState<IimbUgCandidateInput>(freshSample);
+  const [candidate, setCandidate] = useState<IimbUgCandidateDraft>(freshCandidate);
   const [result, setResult] = useState<PredictionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [issues, setIssues] = useState<Array<{ path: string; message: string }>>([]);
@@ -76,16 +113,29 @@ export function IimbUgWorkbench() {
     setIssues([]);
     try {
       const parsedRequest = iimbUgPredictRequestSchema.safeParse({
-        candidate,
+        candidate: withBlankAttemptsAsZero(candidate),
         calculationMode: "PLANNING",
         targetFinalComposite: 70,
       });
       if (!parsedRequest.success) {
-        setIssues(parsedRequest.error.issues.map((issue) => ({
-          path: issue.path.join("."),
-          message: issue.message,
-        })));
-        throw new Error("Validation failed. Please correct the highlighted candidate data.");
+        const validationIssues = parsedRequest.error.issues.map((issue) => {
+          const path = issue.path.join(".");
+          const requiredField = REQUIRED_FIELD_MESSAGES[path];
+          return {
+            path,
+            message: requiredField?.message ?? issue.message,
+          };
+        });
+        setIssues(validationIssues);
+        const firstField = validationIssues[0]?.path.replace(/^candidate\./, "");
+        if (firstField) {
+          window.setTimeout(() => {
+            const field = document.querySelector<HTMLElement>(`[data-field="${firstField}"]`);
+            field?.scrollIntoView({ behavior: "smooth", block: "center" });
+            field?.focus({ preventScroll: true });
+          }, 50);
+        }
+        return;
       }
 
       setResult(calculateStaticPrediction(
@@ -105,8 +155,8 @@ export function IimbUgWorkbench() {
     <div className="ug-workbench">
       <div className="ug-workbench-grid">
         <aside className="ug-form-panel">
-          <CandidateForm candidate={candidate} setCandidate={setCandidate} busy={busy} onSubmit={submit} />
-          {error && <div className="ug-form-error" role="alert"><strong>{error}</strong>{issues.length ? <ul>{issues.map((issue, index) => <li key={`${issue.path}-${index}`}><code>{issue.path || "request"}</code>: {issue.message}</li>)}</ul> : null}</div>}
+          <CandidateForm candidate={candidate} setCandidate={setCandidate} issues={issues} clearIssue={(field) => setIssues((current) => current.filter((issue) => issue.path !== `candidate.${field}`))} busy={busy} onSubmit={submit} />
+          {error && <div className="ug-form-error" role="alert"><strong>{error}</strong></div>}
         </aside>
 
         <div className="ug-results" id="ug-results" aria-live="polite">
@@ -114,14 +164,13 @@ export function IimbUgWorkbench() {
             <section className="ug-empty-state"><span>Source-aware planning</span><h2>Your analysis will appear here</h2><p>Complete the candidate profile to check exact eligibility gates, calculate your raw score, compare it with the published previous cycle, and explore transparent Pre-PI and final-score scenarios.</p><div><strong>No fake probability</strong><strong>No hidden cutoff assumptions</strong><strong>Full formula provenance</strong></div></section>
           ) : (
             <>
+              <CallOutlookPanel result={result} />
               <EligibilityPanel result={result} />
               <ExamScorePanel result={result} />
               <HistoricalBenchmark result={result} />
               <PrePiBreakdown result={result} />
-              <CallOutlookPanel result={result} />
               <PostPiBreakdown result={result} />
               <SensitivityAnalysis result={result} />
-              <ProgrammePreference result={result} policy={result.policyConfig} />
               <ReadinessPanel result={result} />
               <SourcesPanel result={result} />
             </>

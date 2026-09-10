@@ -10,7 +10,6 @@ export * from "./postpi";
 export * from "./prepi";
 export * from "./predictor";
 export * from "./probability";
-export * from "./programme-allocation";
 export * from "./readiness";
 export * from "./score-planner";
 export * from "./sensitivity";

@@ -84,10 +84,10 @@ export const IIMB_UG_ASSUMPTIONS = [
   "The historical table's aggregate 114 is treated as a canonical raw-score floor because it cannot be a percentile.",
   "Linear raw-to-weighted test conversion is a transparent planning model, not IIMB's confirmed conversion.",
   "The PGP mean/SD standardisation formula is an official analogue only; UG normalization is not published.",
-  "Gender-diversity eligibility is not inferred from the selected gender.",
+  "Gender-diversity points are inferred from the selected gender using the bundled policy-eligible categories.",
   "The current interview-call cutoff is unknown.",
+  "When the current cutoff is unavailable, the interview-call verdict uses transparent Pre-PI planning bands: 80+ strong, 70–79.99 competitive, 60–69.99 borderline, and below 60 unlikely.",
   "The current final composite cutoff is unknown.",
   "Programme-level closing scores and allocation data are unknown.",
   "Admission probability remains disabled until defensible multi-cycle calibration data exists.",
 ] as const;
-

@@ -3,6 +3,7 @@ import type {
   ExamSectionKey,
   ExamSectionResult,
   IimbUgCandidateInput,
+  IimbUgGender,
   IimbUgPolicyConfig,
   IimbUgRuntimeData,
   ScoreComponent,
@@ -10,6 +11,8 @@ import type {
 } from "@/types/iimb-ug";
 import { IIMB_UG_SECTION_ORDER } from "./constants";
 import { clamp, iimbStyleStandardize, linearPercentScore } from "./standardization";
+
+const GENDER_DIVERSITY_ELIGIBLE: IimbUgGender[] = ["FEMALE", "TRANSGENDER"];
 
 function testComponent(
   section: ExamSectionKey,
@@ -204,21 +207,17 @@ export function calculatePrePi(args: {
     stats: runtime.class10MathStats,
     runtime,
   });
-  const genderValue = candidate.genderDiversityEligibility === "ELIGIBLE"
-    ? policy.prePi.weights.gender
-    : candidate.genderDiversityEligibility === "NOT_ELIGIBLE" ? 0 : null;
+  const genderEligible = GENDER_DIVERSITY_ELIGIBLE.includes(candidate.gender);
+  const genderValue = genderEligible ? policy.prePi.weights.gender : 0;
   const gender: ScoreComponent = {
     key: "prepi-gender",
     label: "Gender Diversity",
     weightedValue: genderValue,
     maxScore: policy.prePi.weights.gender,
-    status: genderValue == null ? "DATA_REQUIRED" : "CALCULATED",
+    status: "CALCULATED",
     formula: `${policy.prePi.weights.gender} if policy-eligible; otherwise 0`,
-    sourceType: genderValue == null ? "DATA_REQUIRED" : "USER_INPUT",
-    explanation: genderValue == null
-      ? "Eligibility is unknown, so a score range is shown instead of inferring from gender."
-      : "Uses the candidate's explicit gender-diversity eligibility status.",
-    missingInputs: genderValue == null ? ["genderDiversityEligibility"] : undefined,
+    sourceType: "DERIVED",
+    explanation: `Calculated from selected gender using the eligible categories: ${GENDER_DIVERSITY_ELIGIBLE.join(", ")}.`,
   };
   const components = [...testComponents, overall, math, gender];
   const nonGender = components.filter((component) => component.key !== "prepi-gender");
@@ -227,9 +226,9 @@ export function calculatePrePi(args: {
   const test70 = testComponents.every((component) => component.weightedValue != null)
     ? testComponents.reduce((sum, component) => sum + component.weightedValue!, 0)
     : null;
-  const minimum = base;
-  const maximum = base == null ? null : base + (genderValue ?? policy.prePi.weights.gender);
-  const prePi = base == null || genderValue == null ? null : base + genderValue;
+  const prePi = base == null ? null : base + genderValue;
+  const minimum = prePi;
+  const maximum = prePi;
   const estimated = components.some((component) => component.status === "ESTIMATED");
   return {
     strategy: testStrategy,
@@ -239,7 +238,6 @@ export function calculatePrePi(args: {
     prePi,
     minimum,
     maximum,
-    status: !baseComplete ? "DATA_REQUIRED" as const : estimated || genderValue == null ? "ESTIMATED" as const : "CALCULATED" as const,
+    status: !baseComplete ? "DATA_REQUIRED" as const : estimated ? "ESTIMATED" as const : "CALCULATED" as const,
   };
 }
-

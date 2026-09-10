@@ -131,20 +131,3 @@ export const EMPTY_IIMB_UG_RUNTIME_DATA: IimbUgRuntimeData = {
   sourceType: "DATA_REQUIRED",
   sourceLabel: "No current-cycle runtime dataset configured",
 };
-
-export const IIMB_UG_TEST_RUNTIME_DATA: IimbUgRuntimeData = {
-  version: "SYNTHETIC-TEST-v1",
-  class10OverallStats: { mean: 85, sd: 8, population: "Synthetic test fixture" },
-  class10MathStats: { mean: 88, sd: 7, population: "Synthetic test fixture" },
-  testStats: {
-    VARC: { mean: 22, sd: 8, population: "Synthetic test fixture" },
-    LR: { mean: 22, sd: 8, population: "Synthetic test fixture" },
-    QADI: { mean: 45, sd: 15, population: "Synthetic test fixture" },
-  },
-  genderDiversityEligible: ["FEMALE", "TRANSGENDER"],
-  callBenchmark: { GENERAL: 72 },
-  finalBenchmark: { GENERAL: 68 },
-  sourceType: "MODEL_ASSUMPTION",
-  sourceLabel: "Synthetic test fixture — never production data",
-};
-

@@ -15,10 +15,7 @@ export type IimbUgCategory = "GENERAL" | "EWS" | "NC_OBC" | "SC" | "ST";
 export type IimbUgGender =
   | "MALE"
   | "FEMALE"
-  | "TRANSGENDER"
-  | "NON_BINARY"
-  | "OTHER";
-export type GenderDiversityEligibility = "ELIGIBLE" | "NOT_ELIGIBLE" | "UNKNOWN";
+  | "TRANSGENDER";
 export type EligibilityStatus = "ELIGIBLE" | "PROVISIONALLY_ELIGIBLE" | "INELIGIBLE" | "DATA_REQUIRED";
 export type CalculationMode = "EXACT" | "PLANNING";
 export type TestWeightingStrategy =
@@ -36,14 +33,10 @@ export type FinalTestStrategy =
 export type ExamSectionKey = "VARC" | "LR" | "QADI";
 
 export interface IimbUgCandidateInput {
-  targetProgrammes: Programme[];
-  firstPreference?: Programme;
-  secondPreference?: Programme;
   dateOfBirth: string;
   category: IimbUgCategory;
   pwd: boolean;
   gender: IimbUgGender;
-  genderDiversityEligibility: GenderDiversityEligibility;
   class10Board?: string;
   class10OverallPercent: number;
   class10MathPercent?: number;
@@ -86,6 +79,16 @@ export interface IimbUgCandidateInput {
   reference1Ready?: boolean;
   reference2Ready?: boolean;
 }
+
+export type IimbUgCandidateDraft = Omit<
+  IimbUgCandidateInput,
+  "category" | "gender" | "class10OverallPercent" | "class12Status"
+> & {
+  category: IimbUgCategory | "";
+  gender: IimbUgGender | "";
+  class10OverallPercent?: number;
+  class12Status: IimbUgCandidateInput["class12Status"] | "";
+};
 
 export interface MeanSd {
   mean: number;
@@ -280,6 +283,7 @@ export type CallOutlook =
   | "INELIGIBLE"
   | "SECTION_GATE_FAILED"
   | "BELOW_HISTORICAL_FIRST_SHORTLIST"
+  | "UNLIKELY_ESTIMATE"
   | "MEETS_HISTORICAL_FIRST_SHORTLIST"
   | "CURRENT_THRESHOLD_UNKNOWN"
   | "BORDERLINE_ESTIMATE"
@@ -378,13 +382,6 @@ export interface IimbUgPredictionResult {
     prePiIncrease: number;
     explanation: string;
   }>;
-  programmePreference: {
-    targetProgrammes: Programme[];
-    preference1?: Programme;
-    preference2?: Programme;
-    allocationStatus: "PROGRAMME_ALLOCATION_DATA_REQUIRED" | "EVALUATED";
-    explanation: string;
-  };
   readiness: ReadinessItem[];
   probability: {
     status: "DISABLED" | "DATA_REQUIRED";

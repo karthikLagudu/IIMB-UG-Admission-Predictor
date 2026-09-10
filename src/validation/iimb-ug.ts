@@ -1,12 +1,11 @@
 import { z } from "zod";
 import type { IimbUgPolicyConfig } from "@/types/iimb-ug";
-import { SCORE_TOLERANCE } from "@/lib/iimb-ug/2027_31/constants";
+import { SCORE_TOLERANCE } from "../lib/iimb-ug/2027_31/constants";
 
 const percent = z.number().finite().min(0).max(100);
 const percentile = z.number().finite().min(0).max(100);
 const count = z.number().int().min(0);
 
-const programme = z.enum(["DATA_SCIENCES", "ECONOMICS"]);
 const sourceType = z.enum([
   "OFFICIAL_CURRENT",
   "OFFICIAL_HISTORICAL",
@@ -30,17 +29,13 @@ function isRealIsoDate(value: string): boolean {
 }
 
 export const iimbUgCandidateSchema = z.object({
-  targetProgrammes: z.array(programme).min(1).max(2),
-  firstPreference: programme.optional(),
-  secondPreference: programme.optional(),
   dateOfBirth: z.string().refine(isRealIsoDate, "Enter a valid date in YYYY-MM-DD format."),
   category: z.enum(["GENERAL", "EWS", "NC_OBC", "SC", "ST"]),
   pwd: z.boolean(),
-  gender: z.enum(["MALE", "FEMALE", "TRANSGENDER", "NON_BINARY", "OTHER"]),
-  genderDiversityEligibility: z.enum(["ELIGIBLE", "NOT_ELIGIBLE", "UNKNOWN"]),
+  gender: z.enum(["MALE", "FEMALE", "TRANSGENDER"]),
   class10Board: z.string().trim().min(1).max(120).optional(),
   class10OverallPercent: percent,
-  class10MathPercent: percent.optional(),
+  class10MathPercent: percent,
   studiedMathClass11: z.boolean(),
   studiedMathClass12: z.boolean(),
   class12Status: z.enum(["PASSED", "APPEARING", "RESULT_AWAITED"]),
@@ -80,22 +75,6 @@ export const iimbUgCandidateSchema = z.object({
   reference1Ready: z.boolean().optional(),
   reference2Ready: z.boolean().optional(),
 }).superRefine((candidate, context) => {
-  if (new Set(candidate.targetProgrammes).size !== candidate.targetProgrammes.length) {
-    context.addIssue({ code: "custom", path: ["targetProgrammes"], message: "Programme selections must be unique." });
-  }
-  if (candidate.targetProgrammes.length === 2) {
-    if (!candidate.firstPreference || !candidate.secondPreference) {
-      context.addIssue({ code: "custom", path: ["firstPreference"], message: "Rank both programme preferences when applying to both." });
-    } else if (candidate.firstPreference === candidate.secondPreference) {
-      context.addIssue({ code: "custom", path: ["secondPreference"], message: "First and second preference must be different." });
-    }
-  }
-  for (const key of [candidate.firstPreference, candidate.secondPreference]) {
-    if (key && !candidate.targetProgrammes.includes(key)) {
-      context.addIssue({ code: "custom", path: ["targetProgrammes"], message: "Preferences must be selected target programmes." });
-    }
-  }
-
   const sections = [
     { key: "VARC", prefix: "varc", questions: 15 },
     { key: "LR", prefix: "lr", questions: 15 },
@@ -106,13 +85,10 @@ export const iimbUgCandidateSchema = z.object({
     const wrong = candidate[`${section.prefix}Wrong`];
     const unattempted = candidate[`${section.prefix}Unattempted`];
     const supplied = [correct, wrong, unattempted].filter((value) => value != null).length;
-    if (supplied > 0 && supplied < 3) {
-      context.addIssue({ code: "custom", path: [`${section.prefix}Correct`], message: `${section.key} correct and wrong counts must be supplied together.` });
-      continue;
-    }
     if (supplied === 3) {
       if (correct! + wrong! + unattempted! !== section.questions) {
-        context.addIssue({ code: "custom", path: [`${section.prefix}Unattempted`], message: `${section.key} correct + wrong + unattempted must equal ${section.questions}.` });
+        const invalidField = correct! > section.questions ? `${section.prefix}Correct` : `${section.prefix}Wrong`;
+        context.addIssue({ code: "custom", path: [invalidField], message: `${section.key} correct and wrong answers cannot exceed ${section.questions}.` });
       }
       const calculatedUnit = correct! - wrong! / 3;
       const calculatedCanonical = 3 * correct! - wrong!;
@@ -124,10 +100,6 @@ export const iimbUgCandidateSchema = z.object({
       if (suppliedCanonical != null && Math.abs(suppliedCanonical - calculatedCanonical) > SCORE_TOLERANCE) {
         context.addIssue({ code: "custom", path: [`${section.prefix}CanonicalRaw`], message: `${section.key} canonical raw score does not match supplied attempts.` });
       }
-    }
-    const hasRaw = candidate[`${section.prefix}Raw`] != null || candidate[`${section.prefix}CanonicalRaw`] != null;
-    if (supplied === 0 && !hasRaw) {
-      context.addIssue({ code: "custom", path: [`${section.prefix}Correct`], message: `Supply ${section.key} attempts or a raw score.` });
     }
   }
 });
@@ -161,7 +133,7 @@ export const iimbUgRuntimeSchema = z.object({
   callBenchmark: z.record(z.string(), percent).optional(),
   finalBenchmark: z.record(z.string(), percent).optional(),
   programmeFinalBenchmark: z.record(z.string(), z.record(z.string(), percent)).optional(),
-  genderDiversityEligible: z.array(z.enum(["MALE", "FEMALE", "TRANSGENDER", "NON_BINARY", "OTHER"])).optional(),
+  genderDiversityEligible: z.array(z.enum(["MALE", "FEMALE", "TRANSGENDER"])).optional(),
   customFinalTestScore: z.number().finite().min(0).max(40).optional(),
   sourceType: sourceType.optional(),
   sourceLabel: z.string().min(1).optional(),

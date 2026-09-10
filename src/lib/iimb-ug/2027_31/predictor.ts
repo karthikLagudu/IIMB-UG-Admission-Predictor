@@ -17,7 +17,6 @@ import { calculatePrePi } from "./prepi";
 import { calculatePostPi } from "./postpi";
 import { calculateRequiredPi } from "./pi-solver";
 import { calculateSensitivity } from "./sensitivity";
-import { evaluateProgrammePreference } from "./programme-allocation";
 import { calculateApplicationReadiness } from "./readiness";
 import { IIMB_UG_PROBABILITY_DISABLED } from "./probability";
 import { buildWarnings } from "./diagnostics";
@@ -51,9 +50,16 @@ function callOutlook(args: {
 }) {
   if (!args.eligible) return { label: "INELIGIBLE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The primary current-cycle eligibility interpretation is not satisfied." };
   if (args.positiveGate === false) return { label: "SECTION_GATE_FAILED" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "At least one section has a non-positive raw score; zero fails the first-shortlist gate." };
-  if (args.historical.status === "FAIL") return { label: "BELOW_HISTORICAL_FIRST_SHORTLIST" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The profile does not clear every previous-cycle first-shortlist condition." };
+  if (args.historical.status === "FAIL" || args.historical.aggregatePass === false) return { label: "BELOW_HISTORICAL_FIRST_SHORTLIST" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The profile is below at least one known previous-cycle first-shortlist condition." };
   const benchmark = args.runtime.callBenchmark?.[runtimeCategory(args.candidate)] ?? null;
   if (benchmark == null) {
+    if (args.minimum != null && args.maximum != null) {
+      const score = (args.minimum + args.maximum) / 2;
+      if (score >= 80) return { label: "STRONG_ESTIMATE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The Pre-PI planning score is in the strong 80+ band. This is an estimate because IIMB has not published the current PI-call cutoff." };
+      if (score >= 70) return { label: "COMPETITIVE_ESTIMATE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The Pre-PI planning score is in the competitive 70–79.99 band. This is an estimate because IIMB has not published the current PI-call cutoff." };
+      if (score >= 60) return { label: "BORDERLINE_ESTIMATE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The Pre-PI planning score is in the borderline 60–69.99 band. The interview call remains uncertain." };
+      return { label: "UNLIKELY_ESTIMATE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The Pre-PI planning score is below 60, so an interview call is unlikely under the app's planning bands." };
+    }
     return {
       label: "CURRENT_THRESHOLD_UNKNOWN" as const,
       benchmark: null,
@@ -73,7 +79,7 @@ function callOutlook(args: {
       ? "COMPETITIVE_ESTIMATE" as const
       : gapMaximum >= 0
         ? "BORDERLINE_ESTIMATE" as const
-        : "DATA_INSUFFICIENT" as const;
+        : "UNLIKELY_ESTIMATE" as const;
   return {
     label,
     benchmark,
@@ -169,7 +175,6 @@ export function predictIimbUgAdmission(
     postPi,
     requiredPi,
     sensitivity: calculateSensitivity(policy),
-    programmePreference: evaluateProgrammePreference(candidate, runtime),
     readiness: calculateApplicationReadiness(candidate, {
       agePass: age.status === "PASS",
       academicsPass: academics.primaryEligibility,
@@ -182,37 +187,3 @@ export function predictIimbUgAdmission(
   result.warnings = buildWarnings(result);
   return result;
 }
-
-export const SAMPLE_IIMB_UG_CANDIDATE: IimbUgCandidateInput = {
-  targetProgrammes: ["DATA_SCIENCES", "ECONOMICS"],
-  firstPreference: "DATA_SCIENCES",
-  secondPreference: "ECONOMICS",
-  dateOfBirth: "2007-04-10",
-  category: "GENERAL",
-  pwd: false,
-  gender: "MALE",
-  genderDiversityEligibility: "UNKNOWN",
-  class10Board: "CBSE",
-  class10OverallPercent: 93,
-  class10MathPercent: 96,
-  studiedMathClass11: true,
-  studiedMathClass12: true,
-  class12Status: "APPEARING",
-  class12Board: "CBSE",
-  varcCorrect: 12,
-  varcWrong: 2,
-  varcUnattempted: 1,
-  lrCorrect: 11,
-  lrWrong: 3,
-  lrUnattempted: 1,
-  qadiCorrect: 22,
-  qadiWrong: 5,
-  qadiUnattempted: 3,
-  qadiPercentile: 92,
-  piPerformancePercent: 70,
-  sopReady: false,
-  class10DocumentReady: true,
-  class12DocumentReady: false,
-  reference1Ready: false,
-  reference2Ready: false,
-};
