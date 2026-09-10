@@ -17,8 +17,7 @@ export type IimbUgGender =
   | "FEMALE"
   | "TRANSGENDER"
   | "NON_BINARY"
-  | "OTHER"
-  | "PREFER_NOT_TO_SAY";
+  | "OTHER";
 export type GenderDiversityEligibility = "ELIGIBLE" | "NOT_ELIGIBLE" | "UNKNOWN";
 export type EligibilityStatus = "ELIGIBLE" | "PROVISIONALLY_ELIGIBLE" | "INELIGIBLE" | "DATA_REQUIRED";
 export type CalculationMode = "EXACT" | "PLANNING";
