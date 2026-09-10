@@ -105,7 +105,7 @@ export function IimbUgWorkbench() {
     <div className="ug-workbench">
       <div className="ug-workbench-grid">
         <aside className="ug-form-panel">
-          <CandidateForm candidate={candidate} setCandidate={setCandidate} busy={busy} onSubmit={submit} onLoadExample={() => { setCandidate(freshSample()); setError(null); setIssues([]); }} />
+          <CandidateForm candidate={candidate} setCandidate={setCandidate} busy={busy} onSubmit={submit} />
           {error && <div className="ug-form-error" role="alert"><strong>{error}</strong>{issues.length ? <ul>{issues.map((issue, index) => <li key={`${issue.path}-${index}`}><code>{issue.path || "request"}</code>: {issue.message}</li>)}</ul> : null}</div>}
         </aside>
 

@@ -10,7 +10,6 @@ interface CandidateFormProps {
   setCandidate: Dispatch<SetStateAction<IimbUgCandidateInput>>;
   busy: boolean;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-  onLoadExample: () => void;
 }
 
 const PROGRAMMES: Array<{ key: Programme; label: string }> = [
@@ -86,7 +85,7 @@ export function CandidateForm(props: CandidateFormProps) {
 
   return (
     <form className="ug-candidate-form" onSubmit={props.onSubmit} noValidate>
-      <div className="ug-form-heading"><div><span>Candidate profile</span><h2>Build your planning snapshot</h2></div><button type="button" onClick={props.onLoadExample}>Load worked example</button></div>
+      <div className="ug-form-heading"><div><span>Candidate profile</span><h2>Build your planning snapshot</h2></div></div>
 
       <fieldset>
         <legend>Programme choices</legend>
