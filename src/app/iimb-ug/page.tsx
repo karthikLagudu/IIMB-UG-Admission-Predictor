@@ -34,7 +34,7 @@ export default function IimbUgPage() {
             <p className="ug-eyebrow">Independent planning tool · Not affiliated with IIM Bangalore</p>
             <h1><span>IIM Bangalore UG</span>{" "}<span className="ug-gradient-title">Interview Call Predictor</span></h1>
             <h2>B.Sc. (Hons) Data Sciences &amp; Economics</h2>
-            <p>Enter your academic profile, check eligibility and calculate the UG Admission Test score you need for a competitive interview-call target.</p>
+            <p>Enter your academic profile, check eligibility and calculate a personalized safe UG Admission Test score for a strong interview-call position.</p>
           </div>
         </div>
       </section>

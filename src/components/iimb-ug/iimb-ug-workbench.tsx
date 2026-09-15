@@ -155,7 +155,7 @@ export function IimbUgWorkbench() {
 
         <div className="ug-results" id="ug-results" aria-live="polite">
           {!result ? (
-            <section className="ug-empty-state"><span>Source-aware call planning</span><h2>Your required exam score will appear here</h2><p>Enter the student’s eligibility and academic profile. The planner will calculate the profile contribution out of 30 and the UG Admission Test score needed out of 70.</p><div><strong>Academic score first</strong><strong>Personalized exam target</strong><strong>No hidden cutoff assumptions</strong></div></section>
+            <section className="ug-empty-state"><span>Source-aware call planning</span><h2>Your safe interview-call score will appear here</h2><p>Enter the student’s eligibility and academic profile. The planner will assess profile strength and calculate a conservative UG Admission Test target out of 70 and 180.</p><div><strong>Profile strength</strong><strong>Personalized safe score</strong><strong>No hidden cutoff assumptions</strong></div></section>
           ) : (
             <>
               <CallScoreRequirement result={result} />

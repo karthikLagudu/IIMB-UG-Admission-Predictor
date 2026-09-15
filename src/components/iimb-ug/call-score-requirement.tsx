@@ -9,18 +9,20 @@ type CallTarget = {
   label: string;
   target: number;
   description: string;
+  safe?: boolean;
 };
 
 const CALL_TARGETS: CallTarget[] = [
   {
-    label: "Competitive target",
-    target: PRE_PI_CALL_PLANNING_BANDS.competitive,
-    description: "The app's main planning threshold for a competitive interview-call position.",
+    label: "Safe planning target",
+    target: PRE_PI_CALL_PLANNING_BANDS.strong,
+    description: "The app's conservative target for a strong interview-call position while the official cutoff is unavailable.",
+    safe: true,
   },
   {
-    label: "Strong target",
-    target: PRE_PI_CALL_PLANNING_BANDS.strong,
-    description: "A higher planning buffer while the official category-wise cutoff is unavailable.",
+    label: "Competitive target",
+    target: PRE_PI_CALL_PLANNING_BANDS.competitive,
+    description: "A lower planning threshold that may be competitive, but carries less safety margin.",
   },
 ];
 
@@ -30,6 +32,13 @@ function formatScore(value: number) {
 
 function formatCategory(category: IimbUgPredictionResult["historicalShortlist"]["resolvedCategory"]) {
   return category === "NC_OBC" ? "NC-OBC" : category === "PWD" ? "PwD" : category;
+}
+
+function profileStrength(score: number) {
+  if (score >= 25) return { label: "Strong profile", tone: "strong" };
+  if (score >= 20) return { label: "Good profile", tone: "good" };
+  if (score >= 15) return { label: "Moderate profile", tone: "moderate" };
+  return { label: "Limited profile contribution", tone: "limited" };
 }
 
 function balancedRawPlan(requiredTestScore: number) {
@@ -49,10 +58,10 @@ function TargetCard({ target, profilePoints }: {
   const plan = unreachable ? null : balancedRawPlan(requiredTestScore);
 
   return (
-    <article className={`ug-call-target-card${unreachable ? " target-unreachable" : ""}`}>
+    <article className={`ug-call-target-card${target.safe ? " safe-target" : ""}${unreachable ? " target-unreachable" : ""}`}>
       <div className="ug-call-target-title">
         <div><span>{target.label}</span><strong>{target.target} / 100 Pre-PI</strong></div>
-        <b>{unreachable ? "Not reachable by test alone" : `Need ${formatScore(requiredTestScore)} / 70`}</b>
+        <b>{unreachable ? "Not reachable by test alone" : target.safe ? `Safe exam aim: ${formatScore(requiredTestScore)} / 70` : `Need ${formatScore(requiredTestScore)} / 70`}</b>
       </div>
       {unreachable ? (
         <p className="ug-call-target-warning">Your academic and diversity contribution is too low to reach this planning target even with 70/70 from the test.</p>
@@ -85,32 +94,33 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
   const mathPoints = prePi.components.find((component) => component.key === "prepi-class10Math")?.weightedValue;
   const diversityPoints = prePi.components.find((component) => component.key === "prepi-gender")?.weightedValue;
   const historical = result.historicalShortlist;
-  const competitiveRequiredTest = profilePoints == null
+  const safeRequiredTest = profilePoints == null
     ? null
-    : Math.max(0, PRE_PI_CALL_PLANNING_BANDS.competitive - profilePoints);
-  const competitiveRawPlan = competitiveRequiredTest == null
+    : Math.max(0, PRE_PI_CALL_PLANNING_BANDS.strong - profilePoints);
+  const safeRawPlan = safeRequiredTest == null
     ? null
-    : balancedRawPlan(competitiveRequiredTest);
+    : balancedRawPlan(safeRequiredTest);
   const historicalAggregateFloor = historical.benchmark.aggregateCanonicalScoreFloor;
-  const recommendedRawTarget = competitiveRawPlan == null
+  const recommendedRawTarget = safeRawPlan == null
     ? null
-    : Math.max(competitiveRawPlan.total, historicalAggregateFloor);
-  const recommendationBasis = competitiveRawPlan == null
+    : Math.max(safeRawPlan.total, historicalAggregateFloor);
+  const recommendationBasis = safeRawPlan == null
     ? null
-    : competitiveRawPlan.total >= historicalAggregateFloor
-      ? "Your personalized competitive plan is the higher requirement."
+    : safeRawPlan.total >= historicalAggregateFloor
+      ? "Your personalized safe-score plan is the higher requirement."
       : "The previous-cycle category benchmark is the higher requirement.";
+  const strength = profilePoints == null ? null : profileStrength(profilePoints);
 
   return (
     <section className="ug-panel ug-call-score-panel" aria-labelledby="ug-call-score-heading">
       <div className="ug-panel-heading">
-        <div><span>Personal score plan</span><h2 id="ug-call-score-heading">What test score is needed for a call?</h2></div>
+        <div><span>Personal safe-score plan</span><h2 id="ug-call-score-heading">What is your safe score for an interview call?</h2></div>
         <IimbUgSourceBadge source="MODEL_ASSUMPTION" />
       </div>
 
       <div className="ug-call-score-notice">
         <strong>The exact 2027 interview-call cutoff has not been published.</strong>
-        <p>Your academic profile is scored first. The remaining points show the exam score needed for a competitive or strong call-planning target. Eligibility and a positive raw score in every test section remain mandatory.</p>
+        <p>Your safe score is therefore a conservative planning target, not a guarantee. It uses the 80/100 strong Pre-PI band and will never fall below the previous-cycle aggregate benchmark for your category.</p>
       </div>
 
       {result.eligibility.status === "INELIGIBLE" ? (
@@ -120,9 +130,9 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
       ) : (
         <>
           <div className="ug-profile-score-hero">
-            <span>Your academic/profile score</span>
+            <div><span>Your academic/profile score</span>{strength && <b className={`ug-profile-strength ${strength.tone}`}>{strength.label}</b>}</div>
             <strong>{formatScore(profilePoints)} <small>/ 30</small></strong>
-            <p>This is fixed from the details entered below; the exam contributes the remaining 70 points.</p>
+            <p>This represents your profile strength from academics and diversity. The exam contributes the remaining 70 points.</p>
           </div>
           <div className="ug-call-score-baseline">
             <div><span>Class X overall</span><strong>{overallPoints == null ? "Required" : `${formatScore(overallPoints)} / 15`}</strong></div>
@@ -131,9 +141,9 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
           </div>
           <div className="ug-benchmark-recommendation">
             <div className="ug-recommended-score">
-              <span>Recommended minimum raw-score target</span>
+              <span>Your recommended safe raw score</span>
               <strong>{recommendedRawTarget} <small>/ 180</small></strong>
-              <p>Aim for at least this score: it is the higher of your personalized competitive plan and the previous-cycle aggregate benchmark.</p>
+              <p>Aim for at least this score. It is the higher of your personalized 80/100 strong-score plan and the previous-cycle aggregate benchmark.</p>
             </div>
             <div className="ug-historical-guardrail">
               <div className="ug-historical-title"><span>Previous-cycle official benchmark</span><strong>{formatCategory(historical.resolvedCategory)}</strong></div>
@@ -149,7 +159,7 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
             {CALL_TARGETS.map((target) => <TargetCard key={target.target} target={target} profilePoints={profilePoints} />)}
           </div>
           <p className="ug-call-section-warning">In addition to the total target, the student must obtain a positive raw score in VARC, LR and QADI. Zero in any section fails the published first-shortlist gate.</p>
-          <p className="ug-panel-note">Balanced raw plans distribute the required performance proportionally across VARC, LR and QADI and round each section upward. A different section mix can produce the same weighted score. QADI percentile cannot be converted reliably into marks until IIMB publishes the relevant score-to-percentile mapping. The UG raw-to-weighted transformation is also unconfirmed, so use these figures as planning guidance rather than a guaranteed cutoff.</p>
+          <p className="ug-panel-note">“Safe” means a conservative planning buffer; it does not guarantee an interview call. Balanced raw plans distribute the required performance proportionally across VARC, LR and QADI and round each section upward. A different section mix can produce the same weighted score. QADI percentile cannot be converted reliably into marks until IIMB publishes the relevant score-to-percentile mapping. The UG raw-to-weighted transformation is also unconfirmed.</p>
         </>
       )}
     </section>
