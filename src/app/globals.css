@@ -741,6 +741,15 @@
 .ug-historical-guardrail dt { color: #806b3c; font-size: 7px; font-weight: 850; text-transform: uppercase; }
 .ug-historical-guardrail dd { margin: 4px 0 0; color: #3d3017; font-size: 10px; font-weight: 900; line-height: 1.35; }
 .ug-historical-guardrail > p { margin: 10px 0 0; color: #755f32; font-size: 8px; line-height: 1.5; }
+.ug-safe-formula-panel { margin-top: 12px; padding: 18px; border: 1px solid rgba(126, 62, 82, .16); border-radius: 14px; background: linear-gradient(145deg, #fff, #fcf7f9); }
+.ug-safe-formula-heading > span { color: #a5123c; font-size: 8px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
+.ug-safe-formula-heading h3 { margin: 4px 0 0; color: #21162f; font-size: 16px; }
+.ug-safe-formula-panel ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 14px 0 0; padding: 0; list-style: none; }
+.ug-safe-formula-panel li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; padding: 13px; border: 1px solid rgba(126, 62, 82, .13); border-radius: 11px; background: rgba(255,255,255,.88); }
+.ug-safe-formula-panel li > b { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #fce8ee; color: #a5123c; font-size: 10px; }
+.ug-safe-formula-panel li strong { display: block; color: #271b28; font-size: 10px; }
+.ug-safe-formula-panel li code { display: block; margin-top: 7px; padding: 8px; border-radius: 7px; background: #27172b; color: #ffe0e8; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 8px; line-height: 1.45; white-space: normal; overflow-wrap: anywhere; }
+.ug-safe-formula-panel li p { margin: 7px 0 0; color: #6d5a63; font-size: 8px; line-height: 1.5; }
 .ug-call-target-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; margin-top: 12px; }
 .ug-call-target-card { padding: 17px; border: 1px solid rgba(217, 11, 63, .2); border-radius: 14px; background: linear-gradient(145deg, #fff, #fff5f7); }
 .ug-call-target-card.safe-target { border: 2px solid rgba(217, 11, 63, .35); box-shadow: 0 12px 28px rgba(145, 17, 55, .1); }
@@ -787,6 +796,7 @@
   .ug-call-score-baseline, .ug-call-target-grid { grid-template-columns: 1fr; }
   .ug-benchmark-recommendation { grid-template-columns: 1fr; }
   .ug-historical-guardrail dl { grid-template-columns: 1fr; }
+  .ug-safe-formula-panel ol { grid-template-columns: 1fr; }
   .ug-balanced-plan { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ug-call-target-title { align-items: flex-start; flex-direction: column; }
   .ug-form-heading, .ug-candidate-form fieldset { padding-left: 17px; padding-right: 17px; }

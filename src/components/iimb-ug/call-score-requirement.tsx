@@ -93,6 +93,8 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
   const overallPoints = prePi.components.find((component) => component.key === "prepi-class10Overall")?.weightedValue;
   const mathPoints = prePi.components.find((component) => component.key === "prepi-class10Math")?.weightedValue;
   const diversityPoints = prePi.components.find((component) => component.key === "prepi-gender")?.weightedValue;
+  const overallPercent = prePi.components.find((component) => component.key === "prepi-class10Overall")?.rawValue;
+  const mathPercent = prePi.components.find((component) => component.key === "prepi-class10Math")?.rawValue;
   const historical = result.historicalShortlist;
   const safeRequiredTest = profilePoints == null
     ? null
@@ -154,6 +156,27 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
               </dl>
               <p>{recommendationBasis} The historical figures are context only and are not the confirmed 2027 cutoff.</p>
             </div>
+          </div>
+          <div className="ug-safe-formula-panel">
+            <div className="ug-safe-formula-heading"><span>Calculation trail</span><h3>How your safe score was calculated</h3></div>
+            <ol>
+              <li>
+                <b>1</b>
+                <div><strong>Calculate profile strength out of 30</strong><code>({formatScore(overallPercent ?? 0)} ÷ 100 × 15) + ({formatScore(mathPercent ?? 0)} ÷ 100 × 10) + {formatScore(diversityPoints ?? 0)} diversity = {formatScore(profilePoints)} / 30</code><p>Class X overall contributes 15 points, Class X Mathematics contributes 10, and eligible gender diversity contributes 5.</p></div>
+              </li>
+              <li>
+                <b>2</b>
+                <div><strong>Find the safe weighted exam score</strong><code>{PRE_PI_CALL_PLANNING_BANDS.strong} strong target − {formatScore(profilePoints)} profile = {formatScore(safeRequiredTest ?? 0)} / 70 needed</code><p>The safe plan uses the stronger 80/100 Pre-PI band rather than the lower 70/100 competitive band.</p></div>
+              </li>
+              <li>
+                <b>3</b>
+                <div><strong>Convert it into a balanced raw-score plan</strong><code>Required performance = {formatScore(safeRequiredTest ?? 0)} ÷ 70 = {formatScore(((safeRequiredTest ?? 0) / 70) * 100)}%</code><p>Apply that rate to each section and round upward: VARC {safeRawPlan?.varc}/45 + LR {safeRawPlan?.lr}/45 + QADI {safeRawPlan?.qadi}/90 = {safeRawPlan?.total}/180.</p></div>
+              </li>
+              <li>
+                <b>4</b>
+                <div><strong>Apply the historical category guardrail</strong><code>max({safeRawPlan?.total} personalized raw plan, {historicalAggregateFloor} historical {formatCategory(historical.resolvedCategory)} floor) = {recommendedRawTarget} / 180</code><p>This produces the displayed safe-score recommendation. The separate QADI percentile and positive-section rules must still be satisfied.</p></div>
+              </li>
+            </ol>
           </div>
           <div className="ug-call-target-grid">
             {CALL_TARGETS.map((target) => <TargetCard key={target.target} target={target} profilePoints={profilePoints} />)}
