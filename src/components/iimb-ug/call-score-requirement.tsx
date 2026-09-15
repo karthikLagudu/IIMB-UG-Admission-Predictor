@@ -36,22 +36,19 @@ function balancedRawPlan(requiredTestScore: number) {
   return { varc, lr, qadi, total: varc + lr + qadi };
 }
 
-function TargetCard({ target, profilePoints, currentTestScore }: {
+function TargetCard({ target, profilePoints }: {
   target: CallTarget;
   profilePoints: number;
-  currentTestScore: number;
 }) {
   const requiredTestScore = Math.max(0, target.target - profilePoints);
-  const additionalNeeded = Math.max(0, requiredTestScore - currentTestScore);
   const unreachable = requiredTestScore > TEST_MAXIMUM;
-  const alreadyThere = !unreachable && additionalNeeded === 0;
   const plan = unreachable ? null : balancedRawPlan(requiredTestScore);
 
   return (
-    <article className={`ug-call-target-card${alreadyThere ? " target-met" : ""}${unreachable ? " target-unreachable" : ""}`}>
+    <article className={`ug-call-target-card${unreachable ? " target-unreachable" : ""}`}>
       <div className="ug-call-target-title">
         <div><span>{target.label}</span><strong>{target.target} / 100 Pre-PI</strong></div>
-        <b>{alreadyThere ? "Target met" : unreachable ? "Not reachable by test alone" : `${formatScore(additionalNeeded)} more needed`}</b>
+        <b>{unreachable ? "Not reachable by test alone" : `Need ${formatScore(requiredTestScore)} / 70`}</b>
       </div>
       {unreachable ? (
         <p className="ug-call-target-warning">Your academic and diversity contribution is too low to reach this planning target even with 70/70 from the test.</p>
@@ -61,6 +58,7 @@ function TargetCard({ target, profilePoints, currentTestScore }: {
             <span>UG Admission Test score needed</span>
             <strong>{formatScore(requiredTestScore)} <small>/ 70 weighted</small></strong>
           </div>
+          <p className="ug-call-equation">{formatScore(target.target)} target − {formatScore(profilePoints)} profile score = <strong>{formatScore(requiredTestScore)} exam score needed</strong></p>
           <dl className="ug-balanced-plan">
             <div><dt>Balanced raw plan</dt><dd>{plan!.total} / 180</dd></div>
             <div><dt>VARC</dt><dd>{plan!.varc} / 45</dd></div>
@@ -79,6 +77,9 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
   const profilePoints = prePi.prePi == null || prePi.test70 == null
     ? null
     : prePi.prePi - prePi.test70;
+  const overallPoints = prePi.components.find((component) => component.key === "prepi-class10Overall")?.weightedValue;
+  const mathPoints = prePi.components.find((component) => component.key === "prepi-class10Math")?.weightedValue;
+  const diversityPoints = prePi.components.find((component) => component.key === "prepi-gender")?.weightedValue;
 
   return (
     <section className="ug-panel ug-call-score-panel" aria-labelledby="ug-call-score-heading">
@@ -89,25 +90,30 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
 
       <div className="ug-call-score-notice">
         <strong>The exact 2027 interview-call cutoff has not been published.</strong>
-        <p>These are personalized planning scores, not guaranteed call cutoffs. Eligibility and a positive raw score in every test section remain mandatory.</p>
+        <p>Your academic profile is scored first. The remaining points show the exam score needed for a competitive or strong call-planning target. Eligibility and a positive raw score in every test section remain mandatory.</p>
       </div>
 
       {result.eligibility.status === "INELIGIBLE" ? (
         <div className="ug-call-score-blocked"><strong>No test score can compensate for failed eligibility.</strong><span>Review the eligibility panel before using the score targets.</span></div>
-      ) : profilePoints == null || prePi.test70 == null ? (
-        <div className="ug-call-score-blocked"><strong>More profile data is required.</strong><span>Complete the Class X and test fields to calculate a personalized score target.</span></div>
+      ) : profilePoints == null ? (
+        <div className="ug-call-score-blocked"><strong>More profile data is required.</strong><span>Complete the academic fields to calculate a personalized exam-score target.</span></div>
       ) : (
         <>
+          <div className="ug-profile-score-hero">
+            <span>Your academic/profile score</span>
+            <strong>{formatScore(profilePoints)} <small>/ 30</small></strong>
+            <p>This is fixed from the details entered below; the exam contributes the remaining 70 points.</p>
+          </div>
           <div className="ug-call-score-baseline">
-            <div><span>Academics + diversity</span><strong>{formatScore(profilePoints)} / 30</strong></div>
-            <div><span>Current test contribution</span><strong>{formatScore(prePi.test70)} / 70</strong></div>
-            <div><span>Current Pre-PI estimate</span><strong>{formatScore(prePi.prePi!)} / 100</strong></div>
+            <div><span>Class X overall</span><strong>{overallPoints == null ? "Required" : `${formatScore(overallPoints)} / 15`}</strong></div>
+            <div><span>Class X Mathematics</span><strong>{mathPoints == null ? "Required" : `${formatScore(mathPoints)} / 10`}</strong></div>
+            <div><span>Diversity contribution</span><strong>{diversityPoints == null ? "Required" : `${formatScore(diversityPoints)} / 5`}</strong></div>
           </div>
           <div className="ug-call-target-grid">
-            {CALL_TARGETS.map((target) => <TargetCard key={target.target} target={target} profilePoints={profilePoints} currentTestScore={prePi.test70!} />)}
+            {CALL_TARGETS.map((target) => <TargetCard key={target.target} target={target} profilePoints={profilePoints} />)}
           </div>
-          {result.exam.positiveGate === false && <p className="ug-call-section-warning">Your current attempt has a non-positive raw score in at least one section. A positive raw score in VARC, LR and QADI is required in addition to the target above.</p>}
-          <p className="ug-panel-note">Balanced raw plans distribute the required performance proportionally across VARC, LR and QADI and round each section upward. A different section mix can produce the same weighted score. The UG raw-to-weighted transformation is not yet confirmed, so use this as a planning guide.</p>
+          <p className="ug-call-section-warning">In addition to the total target, the student must obtain a positive raw score in VARC, LR and QADI. Zero in any section fails the published first-shortlist gate.</p>
+          <p className="ug-panel-note">Balanced raw plans distribute the required performance proportionally across VARC, LR and QADI and round each section upward. A different section mix can produce the same weighted score. The UG raw-to-weighted transformation is not yet confirmed, so use this as a planning guide rather than a guaranteed cutoff.</p>
         </>
       )}
     </section>

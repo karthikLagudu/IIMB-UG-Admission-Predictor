@@ -1,9 +1,7 @@
 "use client";
 
 import type { Dispatch, FormEvent, SetStateAction } from "react";
-import { CircleCheckBig, CircleMinus, CircleX, ListChecks } from "lucide-react";
 import type { IimbUgCandidateDraft } from "@/types/iimb-ug";
-import { IIMB_UG_2027_POLICY } from "@/lib/iimb-ug/2027_31/policy";
 
 interface CandidateFormProps {
   candidate: IimbUgCandidateDraft;
@@ -13,17 +11,6 @@ interface CandidateFormProps {
   busy: boolean;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }
-
-type AttemptCountKey =
-  | "varcCorrect"
-  | "varcWrong"
-  | "varcUnattempted"
-  | "lrCorrect"
-  | "lrWrong"
-  | "lrUnattempted"
-  | "qadiCorrect"
-  | "qadiWrong"
-  | "qadiUnattempted";
 
 export function CandidateForm(props: CandidateFormProps) {
   const { candidate, setCandidate } = props;
@@ -35,43 +22,6 @@ export function CandidateForm(props: CandidateFormProps) {
   const number = (key: keyof IimbUgCandidateDraft, raw: string) => {
     update(key, (raw === "" ? undefined : Number(raw)) as never);
   };
-  const attemptNumber = (
-    key: AttemptCountKey,
-    raw: string,
-    correctKey: AttemptCountKey,
-    wrongKey: AttemptCountKey,
-    unattemptedKey: AttemptCountKey,
-    total: number,
-  ) => {
-    setCandidate((current) => {
-      const next = { ...current, [key]: raw === "" ? undefined : Number(raw) };
-      const correct = next[correctKey];
-      const wrong = next[wrongKey];
-      return {
-        ...next,
-        [unattemptedKey]: correct != null && wrong != null ? Math.max(total - correct - wrong, 0) : undefined,
-      };
-    });
-    props.clearIssue(key);
-  };
-  const examSections = IIMB_UG_2027_POLICY.exam.sections;
-  const attemptRows = [
-    { label: "VARC", correct: "varcCorrect", wrong: "varcWrong", unattempted: "varcUnattempted", total: examSections.VARC.questions },
-    { label: "LR", correct: "lrCorrect", wrong: "lrWrong", unattempted: "lrUnattempted", total: examSections.LR.questions },
-    { label: "QADI", correct: "qadiCorrect", wrong: "qadiWrong", unattempted: "qadiUnattempted", total: examSections.QADI.questions },
-  ] as const;
-  const attemptTotals = attemptRows.reduce((totals, row) => {
-    const correct = candidate[row.correct] ?? 0;
-    const wrong = candidate[row.wrong] ?? 0;
-    return {
-      questions: totals.questions + row.total,
-      correct: totals.correct + correct,
-      wrong: totals.wrong + wrong,
-      attempted: totals.attempted + correct + wrong,
-      marks: totals.marks + (3 * correct - wrong),
-    };
-  }, { questions: 0, correct: 0, wrong: 0, attempted: 0, marks: 0 });
-
   return (
     <form className="ug-candidate-form" onSubmit={props.onSubmit} noValidate>
       <div className="ug-form-heading"><div><span>Candidate profile</span><h2>Build your planning snapshot</h2><p className="ug-programme-scope">One analysis for both B.Sc. (Hons) Data Sciences and B.Sc. (Hons) Economics.</p></div></div>
@@ -90,57 +40,7 @@ export function CandidateForm(props: CandidateFormProps) {
         <div className="ug-inline-checks"><label><input type="checkbox" checked={candidate.studiedMathClass11} onChange={(event) => update("studiedMathClass11", event.target.checked)} /> Mathematics in Class XI</label><label><input type="checkbox" checked={candidate.studiedMathClass12} onChange={(event) => update("studiedMathClass12", event.target.checked)} /> Mathematics in Class XII</label><label><input type="checkbox" checked={candidate.pwd} onChange={(event) => update("pwd", event.target.checked)} /> PwD candidate</label></div>
       </fieldset>
 
-      <fieldset>
-        <legend>UG Admission Test attempts</legend>
-        <p className="ug-form-help">The table is optional. Any blank Correct or Wrong value is treated as 0.</p>
-        <div className="ug-test-banner">
-          <span><ListChecks size={17} aria-hidden="true" /><strong>{attemptTotals.questions}</strong> questions · <strong>{attemptTotals.questions * 3}</strong> marks</span>
-          <span><CircleCheckBig size={17} aria-hidden="true" />Correct <strong>+3</strong></span>
-          <span><CircleX size={17} aria-hidden="true" />Wrong <strong>−1</strong></span>
-          <span><CircleMinus size={17} aria-hidden="true" />Unattempted <strong>0</strong></span>
-        </div>
-        <div className="ug-attempt-table-wrap">
-          <table className="ug-attempt-table">
-            <thead>
-              <tr>
-                <th scope="col">UG section</th>
-                <th scope="col">Correct <span>+3</span></th>
-                <th scope="col">Wrong <span>−1</span></th>
-                <th scope="col">Attempted</th>
-                <th scope="col">Expected marks</th>
-              </tr>
-            </thead>
-            <tbody>
-              {attemptRows.map((row) => {
-                const correct = candidate[row.correct] ?? 0;
-                const wrong = candidate[row.wrong] ?? 0;
-                const attempted = correct + wrong;
-                const marks = 3 * correct - wrong;
-                return (
-                  <tr key={row.label}>
-                    <th scope="row"><strong>{row.label}</strong><span>{row.total} questions</span></th>
-                    <td className={fieldIssue(row.correct) ? "has-error" : ""} data-label="Correct"><input data-field={row.correct} className="ug-answer-correct" aria-label={`${row.label} correct`} aria-invalid={Boolean(fieldIssue(row.correct))} type="number" min="0" max={row.total} value={candidate[row.correct] ?? ""} onChange={(event) => attemptNumber(row.correct, event.target.value, row.correct, row.wrong, row.unattempted, row.total)} />{fieldIssue(row.correct) && <small className="ug-field-error">{fieldIssue(row.correct)?.message}</small>}</td>
-                    <td className={fieldIssue(row.wrong) ? "has-error" : ""} data-label="Wrong"><input data-field={row.wrong} className="ug-answer-wrong" aria-label={`${row.label} wrong`} aria-invalid={Boolean(fieldIssue(row.wrong))} type="number" min="0" max={row.total} value={candidate[row.wrong] ?? ""} onChange={(event) => attemptNumber(row.wrong, event.target.value, row.correct, row.wrong, row.unattempted, row.total)} />{fieldIssue(row.wrong) && <small className="ug-field-error">{fieldIssue(row.wrong)?.message}</small>}</td>
-                    <td className="ug-attempted-cell" data-label="Attempted">{attempted} / {row.total}</td>
-                    <td className={`ug-marks-cell ${marks < 0 ? "negative" : ""}`} data-label="Expected marks">{marks}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-            <tfoot>
-              <tr>
-                <th scope="row">Total</th>
-                <td data-label="Correct">{attemptTotals.correct} right</td>
-                <td data-label="Wrong">{attemptTotals.wrong} wrong</td>
-                <td data-label="Attempted">{attemptTotals.attempted} / {attemptTotals.questions}</td>
-                <td className={attemptTotals.marks < 0 ? "negative" : ""} data-label="Expected marks">{attemptTotals.marks}</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </fieldset>
-
-      <button className="ug-submit" type="submit" disabled={props.busy}>{props.busy ? "Calculating…" : "Analyse my profile"}</button>
+      <button className="ug-submit" type="submit" disabled={props.busy}>{props.busy ? "Calculating…" : "Calculate score needed"}</button>
     </form>
   );
 }

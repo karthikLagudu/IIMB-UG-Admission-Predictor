@@ -4,7 +4,7 @@ import { IimbUgSourceBadge } from "./source-badge";
 export function SourcesPanel({ result }: { result: IimbUgPredictionResult }) {
   return (
     <section className="ug-panel" aria-labelledby="ug-sources-heading">
-      <div className="ug-panel-heading"><div><span>06 · Provenance</span><h2 id="ug-sources-heading">Assumptions & sources</h2></div><IimbUgSourceBadge source="OFFICIAL_CURRENT" /></div>
+      <div className="ug-panel-heading"><div><span>02 · Provenance</span><h2 id="ug-sources-heading">Assumptions & sources</h2></div><IimbUgSourceBadge source="OFFICIAL_CURRENT" /></div>
       <div className="ug-assumption-grid">
         <div><h3>Assumptions and known gaps</h3><ul>{result.assumptions.map((assumption) => <li key={assumption}>{assumption}</li>)}</ul></div>
         <div><h3>Warnings for this result</h3><ul>{result.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></div>

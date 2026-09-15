@@ -19,12 +19,7 @@ import {
 import { iimbUgPredictRequestSchema } from "@/validation/iimb-ug";
 import { CandidateForm } from "./candidate-form";
 import { EligibilityPanel } from "./eligibility-panel";
-import { ExamScorePanel } from "./exam-score-panel";
-import { HistoricalBenchmark } from "./historical-benchmark";
-import { PrePiBreakdown } from "./prepi-breakdown";
-import { CallOutlookPanel } from "./call-outlook";
 import { CallScoreRequirement } from "./call-score-requirement";
-import { SensitivityAnalysis } from "./sensitivity-analysis";
 import { SourcesPanel } from "./sources-panel";
 
 type PredictionResponse = IimbUgPredictionResult & {
@@ -160,16 +155,11 @@ export function IimbUgWorkbench() {
 
         <div className="ug-results" id="ug-results" aria-live="polite">
           {!result ? (
-            <section className="ug-empty-state"><span>Source-aware call planning</span><h2>Your interview-call analysis will appear here</h2><p>Complete the candidate profile to check eligibility, calculate your raw score, compare it with the published previous cycle, and see the personalized test score needed for a competitive call position.</p><div><strong>No fake probability</strong><strong>No hidden cutoff assumptions</strong><strong>Full formula provenance</strong></div></section>
+            <section className="ug-empty-state"><span>Source-aware call planning</span><h2>Your required exam score will appear here</h2><p>Enter the student’s eligibility and academic profile. The planner will calculate the profile contribution out of 30 and the UG Admission Test score needed out of 70.</p><div><strong>Academic score first</strong><strong>Personalized exam target</strong><strong>No hidden cutoff assumptions</strong></div></section>
           ) : (
             <>
-              <CallOutlookPanel result={result} />
               <CallScoreRequirement result={result} />
               <EligibilityPanel result={result} />
-              <ExamScorePanel result={result} />
-              <PrePiBreakdown result={result} />
-              <SensitivityAnalysis result={result} />
-              <HistoricalBenchmark result={result} />
               <SourcesPanel result={result} />
             </>
           )}
