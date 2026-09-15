@@ -21,7 +21,7 @@ export function PostPiBreakdown({ result }: { result: IimbUgPredictionResult }) 
 
   return (
     <section className="ug-panel" aria-labelledby="ug-final-heading">
-      <div className="ug-panel-heading"><div><span>06 · Scenario planning</span><h2 id="ug-final-heading">Final score simulator</h2></div><IimbUgSourceBadge source="MODEL_ASSUMPTION" /></div>
+      <div className="ug-panel-heading"><div><span>04 · Scenario planning</span><h2 id="ug-final-heading">Final score simulator</h2></div><IimbUgSourceBadge source="MODEL_ASSUMPTION" /></div>
       <div className="ug-pi-slider">
         <div><label htmlFor="ug-pi-performance">PI performance scenario</label><output htmlFor="ug-pi-performance">{piPercent}% · {piWeighted.toFixed(2)} / {piMax}</output></div>
         <input id="ug-pi-performance" type="range" min="0" max="100" step="1" value={piPercent} onChange={(event) => setPiPercent(Number(event.target.value))} />

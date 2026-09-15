@@ -77,7 +77,7 @@ export function CallOutlookPanel({ result }: { result: IimbUgPredictionResult })
         <article><span>Pre-PI estimate</span><strong>{prePiRange(result)}</strong></article>
       </div>
       <div className={`ug-outlook-callout ${interviewCallTone(result)}`}><span>Interview-call estimate</span><strong>{interviewCallEstimate(result)}</strong><p>{OUTLOOK_LABEL[result.callOutlook.label]}. {result.callOutlook.explanation}</p></div>
-      <p className="ug-no-probability">No admission probability is shown: {result.probability.explanation}</p>
+      <p className="ug-no-probability">No interview-call probability is shown: {result.probability.explanation}</p>
     </section>
   );
 }

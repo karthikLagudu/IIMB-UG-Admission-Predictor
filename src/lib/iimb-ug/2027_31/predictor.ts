@@ -21,6 +21,12 @@ import { calculateApplicationReadiness } from "./readiness";
 import { IIMB_UG_PROBABILITY_DISABLED } from "./probability";
 import { buildWarnings } from "./diagnostics";
 
+export const PRE_PI_CALL_PLANNING_BANDS = {
+  borderline: 60,
+  competitive: 70,
+  strong: 80,
+} as const;
+
 function runtimeCategory(candidate: Pick<IimbUgCandidateInput, "category" | "pwd">) {
   return candidate.pwd ? "PWD" as const : candidate.category;
 }
@@ -55,9 +61,9 @@ function callOutlook(args: {
   if (benchmark == null) {
     if (args.minimum != null && args.maximum != null) {
       const score = (args.minimum + args.maximum) / 2;
-      if (score >= 80) return { label: "STRONG_ESTIMATE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The Pre-PI planning score is in the strong 80+ band. This is an estimate because IIMB has not published the current PI-call cutoff." };
-      if (score >= 70) return { label: "COMPETITIVE_ESTIMATE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The Pre-PI planning score is in the competitive 70–79.99 band. This is an estimate because IIMB has not published the current PI-call cutoff." };
-      if (score >= 60) return { label: "BORDERLINE_ESTIMATE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The Pre-PI planning score is in the borderline 60–69.99 band. The interview call remains uncertain." };
+      if (score >= PRE_PI_CALL_PLANNING_BANDS.strong) return { label: "STRONG_ESTIMATE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The Pre-PI planning score is in the strong 80+ band. This is an estimate because IIMB has not published the current PI-call cutoff." };
+      if (score >= PRE_PI_CALL_PLANNING_BANDS.competitive) return { label: "COMPETITIVE_ESTIMATE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The Pre-PI planning score is in the competitive 70–79.99 band. This is an estimate because IIMB has not published the current PI-call cutoff." };
+      if (score >= PRE_PI_CALL_PLANNING_BANDS.borderline) return { label: "BORDERLINE_ESTIMATE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The Pre-PI planning score is in the borderline 60–69.99 band. The interview call remains uncertain." };
       return { label: "UNLIKELY_ESTIMATE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The Pre-PI planning score is below 60, so an interview call is unlikely under the app's planning bands." };
     }
     return {

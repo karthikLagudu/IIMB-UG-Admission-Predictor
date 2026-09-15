@@ -10,8 +10,7 @@ export function calculateSensitivity(policy: IimbUgPolicyConfig) {
       section,
       unitRawIncrease: 1,
       prePiIncrease,
-      explanation: `Under linear planning, +1 unit raw mark in ${section} adds ${prePiIncrease.toFixed(4)} Pre-PI points. This is not a marginal admission probability.`,
+      explanation: `Under linear planning, +1 unit raw mark in ${section} adds ${prePiIncrease.toFixed(4)} Pre-PI points. This is not a marginal interview-call probability.`,
     };
   });
 }
-

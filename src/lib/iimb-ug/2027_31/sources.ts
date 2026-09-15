@@ -22,7 +22,7 @@ export const IIMB_UG_SOURCES: PolicySource[] = [
       "references",
       "reservation statement",
     ],
-    notes: "Formal cycle-specific admission procedure. It does not publish UG raw-to-weighted transformations, normalization statistics, current shortlist thresholds or programme closing scores.",
+    notes: "Formal cycle-specific admission procedure. It does not publish UG raw-to-weighted transformations, normalization statistics or current shortlist thresholds.",
   },
   {
     id: "iimb-ug-2027-faq",
@@ -63,7 +63,7 @@ export const IIMB_UG_SOURCES: PolicySource[] = [
     sourceType: "OFFICIAL_HISTORICAL",
     verifiedAt: "2026-08-29",
     supports: ["historical 120-minute format", "historical 60/40 final structure", "programme intake"],
-    notes: "Historical only. Its 120-minute test and 60% test / 40% PI final structure must never overwrite 2027–31 rules.",
+    notes: "Historical only. Its first-shortlist conditions are used for context and must never overwrite 2027–31 rules.",
   },
   {
     id: "iimb-pgp-standardisation-analogue",
@@ -87,7 +87,5 @@ export const IIMB_UG_ASSUMPTIONS = [
   "Gender-diversity points are inferred from the selected gender using the bundled policy-eligible categories.",
   "The current interview-call cutoff is unknown.",
   "When the current cutoff is unavailable, the interview-call verdict uses transparent Pre-PI planning bands: 80+ strong, 70–79.99 competitive, 60–69.99 borderline, and below 60 unlikely.",
-  "The current final composite cutoff is unknown.",
-  "Programme-level closing scores and allocation data are unknown.",
-  "Admission probability remains disabled until defensible multi-cycle calibration data exists.",
+  "Interview-call probability remains disabled until defensible multi-cycle calibration data exists.",
 ] as const;

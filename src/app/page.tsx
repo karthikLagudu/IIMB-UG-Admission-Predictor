@@ -8,18 +8,18 @@ const socialImage = configuredSiteUrl
   : undefined;
 
 export const metadata: Metadata = {
-  title: "IIM Bangalore UG Admission Predictor · 2027–31",
-  description: "Check IIM Bangalore undergraduate eligibility and explore source-aware UG Admission Test, Pre-PI, interview, and final-score scenarios.",
+  title: "IIM Bangalore UG Interview Call Predictor · 2027–31",
+  description: "Check IIM Bangalore undergraduate eligibility and calculate the UG Admission Test score needed for an interview-call planning target.",
   openGraph: {
-    title: "IIM Bangalore UG Admission Predictor",
-    description: "Data Sciences & Economics · 2027–31 · Source-aware admission planning.",
+    title: "IIM Bangalore UG Interview Call Predictor",
+    description: "Data Sciences & Economics · 2027–31 · Source-aware interview-call planning.",
     type: "website",
     ...(socialImage ? { images: [{ url: socialImage, width: 1200, height: 630, alt: "IIM Bangalore UG Admission Predictor" }] } : {}),
   },
   twitter: {
     card: "summary_large_image",
-    title: "IIM Bangalore UG Admission Predictor",
-    description: "Data Sciences & Economics · 2027–31 · Source-aware admission planning.",
+    title: "IIM Bangalore UG Interview Call Predictor",
+    description: "Data Sciences & Economics · 2027–31 · Source-aware interview-call planning.",
     ...(socialImage ? { images: [socialImage] } : {}),
   },
 };
@@ -32,9 +32,9 @@ export default function IimbUgPage() {
           <div>
             <div className="ug-brand-kicker">Thinkplus IPMAT intelligence</div>
             <p className="ug-eyebrow">Independent planning tool · Not affiliated with IIM Bangalore</p>
-            <h1><span>IIM Bangalore UG</span>{" "}<span className="ug-gradient-title">Admission Predictor</span></h1>
+            <h1><span>IIM Bangalore UG</span>{" "}<span className="ug-gradient-title">Interview Call Predictor</span></h1>
             <h2>B.Sc. (Hons) Data Sciences &amp; Economics</h2>
-            <p>Check eligibility, benchmark your UG Admission Test performance, estimate your interview-call position and simulate your final admission score.</p>
+            <p>Check eligibility, benchmark your UG Admission Test performance, estimate your interview-call position and see the score you need for a competitive call target.</p>
           </div>
         </div>
       </section>

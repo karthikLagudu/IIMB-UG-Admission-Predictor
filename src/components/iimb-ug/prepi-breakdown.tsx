@@ -14,7 +14,7 @@ export function PrePiBreakdown({ result }: { result: IimbUgPredictionResult }) {
       : result.prePi.minimum.toFixed(2);
   return (
     <section className="ug-panel" aria-labelledby="ug-prepi-heading">
-      <div className="ug-panel-heading"><div><span>04 · Planning model</span><h2 id="ug-prepi-heading">Pre-PI analysis</h2></div><IimbUgSourceBadge source={result.prePi.status === "CALCULATED" ? "ADMIN_CONFIGURED" : result.prePi.status === "DATA_REQUIRED" ? "DATA_REQUIRED" : "MODEL_ASSUMPTION"} /></div>
+      <div className="ug-panel-heading"><div><span>03 · Planning model</span><h2 id="ug-prepi-heading">Pre-PI analysis</h2></div><IimbUgSourceBadge source={result.prePi.status === "CALCULATED" ? "ADMIN_CONFIGURED" : result.prePi.status === "DATA_REQUIRED" ? "DATA_REQUIRED" : "MODEL_ASSUMPTION"} /></div>
       <div className="ug-score-list">
         {result.prePi.components.map((component) => (
           <article key={component.key}>
