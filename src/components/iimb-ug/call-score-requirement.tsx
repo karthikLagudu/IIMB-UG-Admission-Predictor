@@ -28,6 +28,10 @@ function formatScore(value: number) {
   return value.toFixed(2).replace(/\.00$/, "");
 }
 
+function formatCategory(category: IimbUgPredictionResult["historicalShortlist"]["resolvedCategory"]) {
+  return category === "NC_OBC" ? "NC-OBC" : category === "PWD" ? "PwD" : category;
+}
+
 function balancedRawPlan(requiredTestScore: number) {
   const proportion = requiredTestScore / TEST_MAXIMUM;
   const varc = Math.ceil(CANONICAL_SECTION_MAXIMUMS.varc * proportion);
@@ -80,6 +84,22 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
   const overallPoints = prePi.components.find((component) => component.key === "prepi-class10Overall")?.weightedValue;
   const mathPoints = prePi.components.find((component) => component.key === "prepi-class10Math")?.weightedValue;
   const diversityPoints = prePi.components.find((component) => component.key === "prepi-gender")?.weightedValue;
+  const historical = result.historicalShortlist;
+  const competitiveRequiredTest = profilePoints == null
+    ? null
+    : Math.max(0, PRE_PI_CALL_PLANNING_BANDS.competitive - profilePoints);
+  const competitiveRawPlan = competitiveRequiredTest == null
+    ? null
+    : balancedRawPlan(competitiveRequiredTest);
+  const historicalAggregateFloor = historical.benchmark.aggregateCanonicalScoreFloor;
+  const recommendedRawTarget = competitiveRawPlan == null
+    ? null
+    : Math.max(competitiveRawPlan.total, historicalAggregateFloor);
+  const recommendationBasis = competitiveRawPlan == null
+    ? null
+    : competitiveRawPlan.total >= historicalAggregateFloor
+      ? "Your personalized competitive plan is the higher requirement."
+      : "The previous-cycle category benchmark is the higher requirement.";
 
   return (
     <section className="ug-panel ug-call-score-panel" aria-labelledby="ug-call-score-heading">
@@ -109,11 +129,27 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
             <div><span>Class X Mathematics</span><strong>{mathPoints == null ? "Required" : `${formatScore(mathPoints)} / 10`}</strong></div>
             <div><span>Diversity contribution</span><strong>{diversityPoints == null ? "Required" : `${formatScore(diversityPoints)} / 5`}</strong></div>
           </div>
+          <div className="ug-benchmark-recommendation">
+            <div className="ug-recommended-score">
+              <span>Recommended minimum raw-score target</span>
+              <strong>{recommendedRawTarget} <small>/ 180</small></strong>
+              <p>Aim for at least this score: it is the higher of your personalized competitive plan and the previous-cycle aggregate benchmark.</p>
+            </div>
+            <div className="ug-historical-guardrail">
+              <div className="ug-historical-title"><span>Previous-cycle official benchmark</span><strong>{formatCategory(historical.resolvedCategory)}</strong></div>
+              <dl>
+                <div><dt>Aggregate floor</dt><dd>{historicalAggregateFloor} / 180</dd></div>
+                <div><dt>QADI percentile</dt><dd>{historical.benchmark.qadiPercentileFloor} minimum</dd></div>
+                <div><dt>Section rule</dt><dd>Positive in all sections</dd></div>
+              </dl>
+              <p>{recommendationBasis} The historical figures are context only and are not the confirmed 2027 cutoff.</p>
+            </div>
+          </div>
           <div className="ug-call-target-grid">
             {CALL_TARGETS.map((target) => <TargetCard key={target.target} target={target} profilePoints={profilePoints} />)}
           </div>
           <p className="ug-call-section-warning">In addition to the total target, the student must obtain a positive raw score in VARC, LR and QADI. Zero in any section fails the published first-shortlist gate.</p>
-          <p className="ug-panel-note">Balanced raw plans distribute the required performance proportionally across VARC, LR and QADI and round each section upward. A different section mix can produce the same weighted score. The UG raw-to-weighted transformation is not yet confirmed, so use this as a planning guide rather than a guaranteed cutoff.</p>
+          <p className="ug-panel-note">Balanced raw plans distribute the required performance proportionally across VARC, LR and QADI and round each section upward. A different section mix can produce the same weighted score. QADI percentile cannot be converted reliably into marks until IIMB publishes the relevant score-to-percentile mapping. The UG raw-to-weighted transformation is also unconfirmed, so use these figures as planning guidance rather than a guaranteed cutoff.</p>
         </>
       )}
     </section>
