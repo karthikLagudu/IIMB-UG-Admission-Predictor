@@ -34,7 +34,7 @@ export default function IimbUgPage() {
             <p className="ug-eyebrow">Independent planning tool · Not affiliated with IIM Bangalore</p>
             <h1><span>IIM Bangalore UG</span>{" "}<span className="ug-gradient-title">Category Cutoff Guide</span></h1>
             <h2>B.Sc. (Hons) Data Sciences &amp; Economics</h2>
-            <p>Check eligibility, view your category’s previous-cycle first-shortlist thresholds, and understand how your academic profile contributes to later ranking. The 2027 interview-call cutoff is not published.</p>
+            <p>Check eligibility, view your category’s previous-cycle first-shortlist thresholds, and get a transparent exam-score estimate adjusted for your academic profile. The 2027 interview-call cutoff is not published.</p>
           </div>
         </div>
       </section>

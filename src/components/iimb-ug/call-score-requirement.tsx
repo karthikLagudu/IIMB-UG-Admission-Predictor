@@ -1,5 +1,6 @@
 import type { IimbUgPredictionResult } from "@/types/iimb-ug";
 import { IIMB_UG_2027_POLICY } from "@/lib/iimb-ug/2027_31/policy";
+import { CALL_ESTIMATE_REFERENCE_PROFILE, estimateCategoryRawTarget } from "@/lib/iimb-ug/2027_31/call-score-estimate";
 import { IimbUgSourceBadge } from "./source-badge";
 
 const CATEGORY_ORDER = ["GENERAL", "NC_OBC", "EWS", "SC", "ST", "PWD"] as const;
@@ -22,6 +23,7 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
   const diversityPoints = prePi.components.find((component) => component.key === "prepi-gender")?.weightedValue;
   const overallPercent = prePi.components.find((component) => component.key === "prepi-class10Overall")?.rawValue;
   const mathPercent = prePi.components.find((component) => component.key === "prepi-class10Math")?.rawValue;
+  const estimate = profilePoints == null ? null : estimateCategoryRawTarget(benchmark.aggregateCanonicalScoreFloor, profilePoints);
 
   return (
     <section className="ug-panel ug-call-score-panel" aria-labelledby="ug-call-score-heading">
@@ -32,13 +34,23 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
 
       <div className="ug-call-score-notice">
         <strong>IIM Bangalore has not published a 2027 category-wise interview-call cutoff.</strong>
-        <p>The values below were used for the UG Test 2025 first shortlist. Interview-call scores were higher. We cannot calculate a reliable personalized safe score from these thresholds, so no shared model score is shown as your cutoff.</p>
+        <p>The values below were used for the UG Test 2025 first shortlist; interview-call scores were higher. The exam target is an explicitly assumed planning estimate, not a published cutoff or a guarantee.</p>
       </div>
 
       <div className="ug-category-cutoff">
         <div><span>{formatCategory(historical.resolvedCategory)} · aggregate benchmark</span><strong>{benchmark.aggregateCanonicalScoreFloor}<small> previous cycle</small></strong></div>
         <div><span>{formatCategory(historical.resolvedCategory)} · Section 3 QADI</span><strong>{benchmark.qadiPercentileFloor}<small>th percentile</small></strong></div>
       </div>
+
+      {estimate != null && result.eligibility.status !== "INELIGIBLE" && (
+        <div className="ug-call-estimate">
+          <div className="ug-call-estimate-heading"><span>Estimated exam target for {formatCategory(historical.resolvedCategory)}</span><IimbUgSourceBadge source="MODEL_ASSUMPTION" /></div>
+          <strong>{estimate.target}<small> / 180</small></strong>
+          <p>Planning estimate only. It starts from your category’s previous-cycle aggregate benchmark, adds a 15% buffer, then adjusts for your estimated profile contribution.</p>
+          <code>{benchmark.aggregateCanonicalScoreFloor} historical benchmark + {estimate.buffer} buffer {estimate.profileAdjustment < 0 ? "−" : "+"} {Math.abs(estimate.profileAdjustment)} profile adjustment = {estimate.provisional}; bounded to {benchmark.aggregateCanonicalScoreFloor + 1}–180 = {estimate.target}</code>
+          <p>The adjustment compares your {formatScore(profilePoints!)} / 30 profile contribution with a {CALL_ESTIMATE_REFERENCE_PROFILE} / 30 reference profile, using an assumed linear 180-to-70 conversion. IIMB has not confirmed this conversion or the 15% buffer.</p>
+        </div>
+      )}
 
       <div className="ug-category-cutoff-table-wrap">
         <h3>Published thresholds by category</h3>

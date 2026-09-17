@@ -40,7 +40,7 @@ export function CandidateForm(props: CandidateFormProps) {
         <div className="ug-inline-checks"><label><input type="checkbox" checked={candidate.studiedMathClass11} onChange={(event) => update("studiedMathClass11", event.target.checked)} /> Mathematics in Class XI</label><label><input type="checkbox" checked={candidate.studiedMathClass12} onChange={(event) => update("studiedMathClass12", event.target.checked)} /> Mathematics in Class XII</label><label><input type="checkbox" checked={candidate.pwd} onChange={(event) => update("pwd", event.target.checked)} /> PwD candidate</label></div>
       </fieldset>
 
-      <button className="ug-submit" type="submit" disabled={props.busy}>{props.busy ? "Checking…" : "Show my category cutoff"}</button>
+      <button className="ug-submit" type="submit" disabled={props.busy}>{props.busy ? "Calculating…" : "Estimate my exam target"}</button>
     </form>
   );
 }
