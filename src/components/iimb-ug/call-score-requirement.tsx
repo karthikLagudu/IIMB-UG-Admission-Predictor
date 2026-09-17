@@ -56,6 +56,16 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
         <div><span>{formatCategory(historical.resolvedCategory)} · Section 3 QADI minimum</span><strong>{benchmark.qadiPercentileFloor}<small>th percentile</small></strong></div>
       </div>
 
+      <div className="ug-sectional-requirements">
+        <h3>Section-wise requirements for {formatCategory(historical.resolvedCategory)}</h3>
+        <div className="ug-sectional-requirements-grid">
+          <article><span>QADI · Quantitative Aptitude &amp; Data Interpretation</span><strong>{benchmark.qadiPercentileFloor}th percentile</strong><p>Published previous-cycle first-shortlist minimum. Also score above zero. Contributes up to 30 of the 70 test points.</p></article>
+          <article><span>VARC · Verbal Ability &amp; Reading Comprehension</span><strong>Percentile not published</strong><p>IIMB lists “NA” for a VARC percentile cutoff. A positive raw score is required. Contributes up to 20 of the 70 test points.</p></article>
+          <article><span>LR · Logical Reasoning</span><strong>Percentile not published</strong><p>IIMB lists “NA” for an LR percentile cutoff. A positive raw score is required. Contributes up to 20 of the 70 test points.</p></article>
+        </div>
+        <p>Without section score-to-percentile data, a numeric VARC or LR percentile target cannot be calculated reliably from the overall exam target.</p>
+      </div>
+
       <div className="ug-category-cutoff-table-wrap">
         <h3>Published thresholds by category</h3>
         <table className="ug-category-cutoff-table">
