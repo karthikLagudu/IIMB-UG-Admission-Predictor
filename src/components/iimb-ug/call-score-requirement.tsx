@@ -35,7 +35,7 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
       </div>
 
       {result.eligibility.status === "SITE_FILTER_ONLY" && (
-        <div className="ug-call-score-blocked"><strong>Site planning filter passed; published Class X requirement not met.</strong><span>IIMB's 2027 procedure states at least 60% in Class X overall. Any test target below is hypothetical and does not establish interview-call eligibility.</span></div>
+        <div className="ug-call-score-blocked"><strong>Site planning filter passed; published Class X requirement not met.</strong><span>IIMB&apos;s 2027 procedure states at least 60% in Class X overall. Any test target below is hypothetical and does not establish interview-call eligibility.</span></div>
       )}
 
       {estimate != null && result.eligibility.status !== "INELIGIBLE" && (
