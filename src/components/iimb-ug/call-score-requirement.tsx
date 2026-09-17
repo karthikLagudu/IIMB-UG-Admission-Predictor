@@ -1,9 +1,6 @@
 import type { IimbUgPredictionResult } from "@/types/iimb-ug";
-import { IIMB_UG_2027_POLICY } from "@/lib/iimb-ug/2027_31/policy";
 import { CALL_ESTIMATE_BUFFER_RATE, CALL_ESTIMATE_REFERENCE_PROFILE, estimateCategoryCallRequirement } from "@/lib/iimb-ug/2027_31/call-score-estimate";
 import { IimbUgSourceBadge } from "./source-badge";
-
-const CATEGORY_ORDER = ["GENERAL", "NC_OBC", "EWS", "SC", "ST", "PWD"] as const;
 
 function formatScore(value: number) {
   return value.toFixed(2).replace(/\.00$/, "");
@@ -47,22 +44,6 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
           <p>{estimate.reachable ? `Based on the selected profile and ${formatCategory(historical.resolvedCategory)} category, aim for approximately ${formatScore(estimate.examTarget180)}/180 on the test.` : "The estimated category target cannot be reached with the test maximum for this profile."} This is a planning estimate, not a guaranteed interview-call score. The full formula remains in the calculation trail below.</p>
         </div>
       )}
-
-      <div className="ug-category-cutoff">
-        <div><span>{formatCategory(historical.resolvedCategory)} · previous-cycle aggregate benchmark</span><strong>{benchmark.aggregateCanonicalScoreFloor}<small> / 180</small></strong></div>
-        <div><span>{formatCategory(historical.resolvedCategory)} · Section 3 QADI minimum</span><strong>{benchmark.qadiPercentileFloor}<small>th percentile</small></strong></div>
-      </div>
-
-      <div className="ug-category-cutoff-table-wrap">
-        <h3>Published thresholds by category</h3>
-        <table className="ug-category-cutoff-table">
-          <thead><tr><th scope="col">Category</th><th scope="col">QADI percentile</th><th scope="col">Aggregate benchmark</th></tr></thead>
-          <tbody>{CATEGORY_ORDER.map((category) => {
-            const row = IIMB_UG_2027_POLICY.historical.thresholds[category];
-            return <tr key={category} className={category === historical.resolvedCategory ? "selected" : undefined}><th scope="row">{formatCategory(category)}{category === historical.resolvedCategory ? " · Your category" : ""}</th><td>{row.qadiPercentileFloor}th</td><td>{row.aggregateCanonicalScoreFloor}</td></tr>;
-          })}</tbody>
-        </table>
-      </div>
 
       {result.eligibility.status === "INELIGIBLE" && (
         <div className="ug-call-score-blocked"><strong>Eligibility requirements are not met.</strong><span>Meeting a historical cutoff cannot compensate for failed eligibility. Review the eligibility panel below.</span></div>
