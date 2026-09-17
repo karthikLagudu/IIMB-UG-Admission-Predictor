@@ -24,7 +24,6 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
   const overallPercent = prePi.components.find((component) => component.key === "prepi-class10Overall")?.rawValue;
   const mathPercent = prePi.components.find((component) => component.key === "prepi-class10Math")?.rawValue;
   const estimate = profilePoints == null ? null : estimateCategoryCallRequirement(benchmark.aggregateCanonicalScoreFloor, profilePoints);
-  const showSectionPlan = estimate?.reachable && result.eligibility.status !== "INELIGIBLE";
 
   return (
     <section className="ug-panel ug-call-score-panel" aria-labelledby="ug-call-score-heading">
@@ -55,16 +54,6 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
       <div className="ug-category-cutoff">
         <div><span>{formatCategory(historical.resolvedCategory)} · previous-cycle aggregate benchmark</span><strong>{benchmark.aggregateCanonicalScoreFloor}<small> / 180</small></strong></div>
         <div><span>{formatCategory(historical.resolvedCategory)} · Section 3 QADI minimum</span><strong>{benchmark.qadiPercentileFloor}<small>th percentile</small></strong></div>
-      </div>
-
-      <div className="ug-sectional-requirements">
-        <h3>Estimated section targets for {formatCategory(historical.resolvedCategory)}</h3>
-        <div className="ug-sectional-requirements-grid">
-          <article><span>QADI · Quantitative Aptitude &amp; Data Interpretation</span><strong>{showSectionPlan ? `${formatScore(estimate.sectionTargets.qadi)} / 30` : "Target unavailable"}</strong><p>Estimated weighted-point target. Separately, the published previous-cycle minimum is the {benchmark.qadiPercentileFloor}th percentile, and the raw score must be positive.</p></article>
-          <article><span>VARC · Verbal Ability &amp; Reading Comprehension</span><strong>{showSectionPlan ? `${formatScore(estimate.sectionTargets.varc)} / 20` : "Target unavailable"}</strong><p>Estimated weighted-point target. IIMB published no VARC percentile minimum (“NA”); a positive raw score is required.</p></article>
-          <article><span>LR · Logical Reasoning</span><strong>{showSectionPlan ? `${formatScore(estimate.sectionTargets.lr)} / 20` : "Target unavailable"}</strong><p>Estimated weighted-point target. IIMB published no LR percentile minimum (“NA”); a positive raw score is required.</p></article>
-        </div>
-        <p>Planning split: the needed exam score is allocated in proportion to the official 30:20:20 section weights and rounded upward. These are not official section cutoffs or percentiles; IIMB has not published a score-to-percentile mapping.</p>
       </div>
 
       <div className="ug-category-cutoff-table-wrap">
@@ -104,7 +93,6 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
                 <li><b>4</b><div><strong>Subtract what your profile already contributes</strong><code>Remaining exam need = max(0, {formatScore(estimate.categoryTarget100)} − {formatScore(estimate.profilePoints)}) = {formatScore(estimate.profileGap70)} / 70</code><p>This is the direct “category target minus your profile” step. The result is rounded upward to two decimals.</p></div></li>
                 <li><b>5</b><div><strong>Check the historical aggregate gate</strong><code>Approximate exam equivalent = round up [{benchmark.aggregateCanonicalScoreFloor} × 70 ÷ 180] = {formatScore(estimate.historicalGate70)} / 70; final estimate = max({formatScore(estimate.profileGap70)}, {formatScore(estimate.historicalGate70)}) = {formatScore(estimate.examTarget70)} / 70</code><p>This prevents the displayed target from falling below an approximate equivalent of the historical aggregate minimum. The real test conversion is unpublished, so this is not an official gate in weighted points.</p></div></li>
                 <li><b>6</b><div><strong>See the estimated Pre-PI total</strong><code>{formatScore(estimate.profilePoints)} profile + {formatScore(estimate.examTarget70)} exam = {formatScore(estimate.estimatedPrePi100)} / 100</code><p>The exam has an official 70-point weight: QADI 30, LR 20 and VARC 20. A positive score in every section and the separate QADI percentile condition still matter. This total does not guarantee an interview call.</p></div></li>
-                <li><b>7</b><div><strong>Split the exam target across sections</strong><code>QADI = ceil₂({formatScore(estimate.examTarget70)} × 30 ÷ 70) = {formatScore(estimate.sectionTargets.qadi)}/30; VARC = ceil₂({formatScore(estimate.examTarget70)} × 20 ÷ 70) = {formatScore(estimate.sectionTargets.varc)}/20; LR = ceil₂({formatScore(estimate.examTarget70)} × 20 ÷ 70) = {formatScore(estimate.sectionTargets.lr)}/20</code><p>ceil₂ means round upward to two decimals. This balanced split is one possible study target; a different section mix may reach the same exam total. It cannot predict sectional percentiles.</p></div></li>
               </ol>
             </div>
           )}
