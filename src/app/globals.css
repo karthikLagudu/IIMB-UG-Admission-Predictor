@@ -733,6 +733,7 @@
 .ug-call-estimate-metrics span { color: #f3cbd7; font-size: 9px; font-weight: 800; }
 .ug-call-estimate-metrics strong { margin-top: 7px; font-size: clamp(29px, 3vw, 42px); line-height: 1; }
 .ug-call-estimate-metrics strong small { color: #f2c7d2; font-size: 13px; }
+.ug-call-estimate-needed { grid-column: 1 / -1; background: rgba(255,255,255,.16) !important; }
 .ug-call-estimate > p { margin: 9px 0 0; color: #f4dce3; font-size: 10px; line-height: 1.55; }
 .ug-call-estimate > code { display: block; margin-top: 12px; padding: 10px; border: 1px solid rgba(255,255,255,.22); border-radius: 8px; color: #ffe8ee; font-size: 10px; line-height: 1.5; white-space: normal; overflow-wrap: anywhere; }
 .ug-profile-score-hero { margin-top: 12px; padding: 20px; border-radius: 14px; background: radial-gradient(circle at 100% 0, rgba(255, 90, 131, .26), transparent 40%), linear-gradient(120deg, #21162f, #9e1238); color: white; }
