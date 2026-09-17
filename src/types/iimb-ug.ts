@@ -16,7 +16,7 @@ export type IimbUgGender =
   | "MALE"
   | "FEMALE"
   | "TRANSGENDER";
-export type EligibilityStatus = "ELIGIBLE" | "PROVISIONALLY_ELIGIBLE" | "INELIGIBLE" | "DATA_REQUIRED";
+export type EligibilityStatus = "ELIGIBLE" | "PROVISIONALLY_ELIGIBLE" | "SITE_FILTER_ONLY" | "INELIGIBLE" | "DATA_REQUIRED";
 export type CalculationMode = "EXACT" | "PLANNING";
 export type TestWeightingStrategy =
   | "DIRECT_OFFICIAL_WEIGHTED"
@@ -166,7 +166,8 @@ export interface IimbUgPolicyConfig {
     maximumAge: number;
     earliestEligibleDob: string;
     class10Minimum: number;
-    primaryInterpretation: "CONSERVATIVE_BOTH_CLASS10_CHECKS";
+    class10OverallPlanningMinimum: number;
+    primaryInterpretation: "SITE_OVERALL_38_4_AND_MATH_60";
     alternateInterpretation: "CYCLE_2027_PROCEDURE";
     requireMathClass11: boolean;
     requireMathClass12: boolean;

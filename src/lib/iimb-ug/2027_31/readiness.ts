@@ -1,4 +1,5 @@
 import type { IimbUgCandidateInput, ReadinessItem } from "@/types/iimb-ug";
+import { IIMB_UG_2027_POLICY } from "./policy";
 
 function item(
   key: string,
@@ -14,10 +15,12 @@ export function calculateApplicationReadiness(
   eligibility: { agePass: boolean; academicsPass: boolean },
 ): ReadinessItem[] {
   const certificateRequired = candidate.category !== "GENERAL";
-  const class10MarksReady = candidate.class10OverallPercent >= 60 && candidate.class10MathPercent != null && candidate.class10MathPercent >= 60;
+  const siteOverallPass = candidate.class10OverallPercent >= IIMB_UG_2027_POLICY.eligibility.class10OverallPlanningMinimum;
+  const officialOverallPass = candidate.class10OverallPercent >= IIMB_UG_2027_POLICY.eligibility.class10Minimum;
+  const mathPass = candidate.class10MathPercent != null && candidate.class10MathPercent >= IIMB_UG_2027_POLICY.eligibility.class10Minimum;
   return [
     item("age", "Age eligibility", eligibility.agePass ? "READY" : "VERIFY", eligibility.agePass ? "Age rule passes." : "Age rule must be verified or fails."),
-    item("class10Marks", "Class X marks", candidate.class10MathPercent == null ? "VERIFY" : class10MarksReady ? "READY" : "MISSING", candidate.class10MathPercent == null ? "Class X Mathematics marks are required to check the 60% initial academic filter." : class10MarksReady ? "Class X overall and Mathematics both meet the 60% site filter." : "Class X overall or Mathematics is below the 60% site filter."),
+    item("class10Marks", "Class X marks", candidate.class10MathPercent == null ? "VERIFY" : !siteOverallPass || !mathPass ? "MISSING" : officialOverallPass ? "READY" : "VERIFY", candidate.class10MathPercent == null ? "Class X Mathematics marks are required to check the 60% Mathematics filter." : !siteOverallPass || !mathPass ? "The site's 38.4% overall or 60% Mathematics filter is not met." : officialOverallPass ? "Class X overall and Mathematics both meet the published 60% requirements." : "The site planning filter passes, but IIMB's published procedure requires 60% in Class X overall."),
     item("math11", "Mathematics XI", candidate.studiedMathClass11 ? "READY" : "MISSING", "Mathematics in Class XI is required."),
     item("math12", "Mathematics XII", candidate.studiedMathClass12 ? "READY" : "MISSING", "Mathematics in Class XII is required."),
     item("class12Status", "Class XII status", candidate.class12Status === "PASSED" ? "READY" : "PENDING", candidate.class12Status === "PASSED" ? "Reported passed." : "Provisional until the final certificate is submitted."),

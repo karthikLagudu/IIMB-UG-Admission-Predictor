@@ -34,6 +34,10 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
         <p>IIMB publishes the 30-point profile and 70-point test weights, but not the 2027 Pre-PI score needed for a call. The category total below is a planning estimate anchored to the previous-cycle first-shortlist benchmark, not an official cutoff or guarantee.</p>
       </div>
 
+      {result.eligibility.status === "SITE_FILTER_ONLY" && (
+        <div className="ug-call-score-blocked"><strong>Site planning filter passed; published Class X requirement not met.</strong><span>IIMB's 2027 procedure states at least 60% in Class X overall. Any test target below is hypothetical and does not establish interview-call eligibility.</span></div>
+      )}
+
       {estimate != null && result.eligibility.status !== "INELIGIBLE" && (
         <div className="ug-call-estimate">
           <div className="ug-call-estimate-heading"><span>Estimated score target · {formatCategory(historical.resolvedCategory)}</span><IimbUgSourceBadge source="MODEL_ASSUMPTION" /></div>

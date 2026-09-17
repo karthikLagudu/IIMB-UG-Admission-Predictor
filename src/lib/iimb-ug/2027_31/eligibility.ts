@@ -70,7 +70,8 @@ export function calculateAcademicEligibility(
   candidate: IimbUgCandidateInput,
   policy: IimbUgPolicyConfig,
 ) {
-  const overallPass = candidate.class10OverallPercent >= policy.eligibility.class10Minimum;
+  const overallPass = candidate.class10OverallPercent >= policy.eligibility.class10OverallPlanningMinimum;
+  const officialOverallPass = candidate.class10OverallPercent >= policy.eligibility.class10Minimum;
   const mathXiPass = !policy.eligibility.requireMathClass11 || candidate.studiedMathClass11;
   const mathXiiPass = !policy.eligibility.requireMathClass12 || candidate.studiedMathClass12;
   const mathPercentKnown = candidate.class10MathPercent != null;
@@ -84,9 +85,9 @@ export function calculateAcademicEligibility(
       label: "Class X overall",
       status: overallPass ? "PASS" : "FAIL",
       actual: candidate.class10OverallPercent,
-      required: policy.eligibility.class10Minimum,
-      explanation: `The formal 2027–31 procedure requires at least ${policy.eligibility.class10Minimum}% in Class X overall.`,
-      sourceType: "OFFICIAL_CURRENT",
+      required: policy.eligibility.class10OverallPlanningMinimum,
+      explanation: `This site's initial planning filter requires at least ${policy.eligibility.class10OverallPlanningMinimum}% in Class X overall. IIMB's 2027–31 procedure states ${policy.eligibility.class10Minimum}% in Class X; the lower site threshold is not official.`,
+      sourceType: "MODEL_ASSUMPTION",
     },
     {
       key: "class10Math",
@@ -104,7 +105,7 @@ export function calculateAcademicEligibility(
     {
       key: "class10Overall",
       label: "Class X overall",
-      status: overallPass ? "PASS" : "FAIL",
+      status: officialOverallPass ? "PASS" : "FAIL",
       actual: candidate.class10OverallPercent,
       required: policy.eligibility.class10Minimum,
       explanation: `The cycle-specific admission procedure says at least ${policy.eligibility.class10Minimum}% in Class X without specifying Mathematics.`,
@@ -115,11 +116,11 @@ export function calculateAcademicEligibility(
   ];
   return {
     primaryEligibility: overallPass && mathPercentPass === true && mathXiPass && mathXiiPass,
-    alternateEligibility: overallPass && mathXiPass && mathXiiPass,
+    alternateEligibility: officialOverallPass && mathXiPass && mathXiiPass,
     primaryRules,
     alternateRules,
     sourceConflict: true as const,
-    explanation: "The 2027 admission procedure says at least 60% in Class X; IIMB's programme pages specifically require at least 60% in Class X Mathematics. This site's initial filter requires both and will fail a Mathematics score below 60%.",
+    explanation: `The site's planning filter requires ${policy.eligibility.class10OverallPlanningMinimum}% in Class X overall and ${policy.eligibility.class10Minimum}% in Mathematics. IIMB's 2027 admission procedure says at least ${policy.eligibility.class10Minimum}% in Class X, while its programme pages specify ${policy.eligibility.class10Minimum}% in Class X Mathematics. Passing the site filter below ${policy.eligibility.class10Minimum}% overall does not establish official eligibility.`,
   };
 }
 

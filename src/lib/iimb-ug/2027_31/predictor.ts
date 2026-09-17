@@ -54,7 +54,7 @@ function callOutlook(args: {
   candidate: IimbUgCandidateInput;
   runtime: IimbUgRuntimeData;
 }) {
-  if (!args.eligible) return { label: "INELIGIBLE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The site's initial eligibility filter is not satisfied. Check the age, Class X overall, Class X Mathematics, and Class XI/XII Mathematics rules." };
+  if (!args.eligible) return { label: "INELIGIBLE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The site's initial eligibility filter or the published 60% Class X rule is not satisfied. Check the age, Class X overall, Class X Mathematics, and Class XI/XII Mathematics rules." };
   if (args.positiveGate === false) return { label: "SECTION_GATE_FAILED" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "At least one section has a non-positive raw score; zero fails the first-shortlist gate." };
   if (args.historical.status === "FAIL" || args.historical.aggregatePass === false) return { label: "BELOW_HISTORICAL_FIRST_SHORTLIST" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The profile is below at least one known previous-cycle first-shortlist condition." };
   const benchmark = args.runtime.callBenchmark?.[runtimeCategory(args.candidate)] ?? null;
@@ -124,7 +124,9 @@ export function predictIimbUgAdmission(
   const hardEligible = age.status === "PASS" && academics.primaryEligibility;
   const eligibilityStatus = !hardEligible
     ? "INELIGIBLE" as const
-    : class12.status === "PROVISIONAL"
+    : !academics.alternateEligibility
+      ? "SITE_FILTER_ONLY" as const
+      : class12.status === "PROVISIONAL"
       ? "PROVISIONALLY_ELIGIBLE" as const
       : "ELIGIBLE" as const;
 
@@ -149,7 +151,7 @@ export function predictIimbUgAdmission(
     academicStrategy: strategies.academic,
   });
   const outlook = callOutlook({
-    eligible: hardEligible,
+    eligible: hardEligible && academics.alternateEligibility,
     positiveGate,
     historical: historicalShortlist,
     minimum: prePi.minimum,

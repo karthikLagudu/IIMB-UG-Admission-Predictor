@@ -83,7 +83,7 @@ export const IIMB_UG_SOURCES: PolicySource[] = [
 ];
 
 export const IIMB_UG_ASSUMPTIONS = [
-  "The cycle-specific procedure says at least 60% in Class X, while the current programme pages specify at least 60% in Class X Mathematics. The site's initial academic filter conservatively requires both.",
+  "The site's 38.4% Class X overall planning filter is a user-requested assumption, not an IIMB rule. The cycle-specific procedure says at least 60% in Class X, while the programme pages specify at least 60% in Class X Mathematics.",
   "Canonical +3/−1 scores are an exact three-times representation of the confirmed +1/−1/3 marking scheme.",
   "The historical table's aggregate 114 is treated as a canonical raw-score floor because it cannot be a percentile.",
   "Linear raw-to-weighted test conversion is a transparent planning model, not IIMB's confirmed conversion.",
