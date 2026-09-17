@@ -97,7 +97,7 @@ export const IIMB_UG_2027_POLICY = {
       class10Overall: 15,
       class10Math: 10,
       gender: 5,
-      testSections: { VARC: 20, LR: 30, QADI: 20 },
+      testSections: { VARC: 20, LR: 20, QADI: 30 },
     },
     defaultTestStrategy: "LINEAR_RAW_PLANNING",
     defaultAcademicStrategy: "LINEAR_PLANNING",

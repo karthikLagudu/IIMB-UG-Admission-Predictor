@@ -1,6 +1,6 @@
 import type { IimbUgPredictionResult } from "@/types/iimb-ug";
 import { IIMB_UG_2027_POLICY } from "@/lib/iimb-ug/2027_31/policy";
-import { CALL_ESTIMATE_REFERENCE_PROFILE, estimateCategoryCallRequirement } from "@/lib/iimb-ug/2027_31/call-score-estimate";
+import { CALL_ESTIMATE_BUFFER_RATE, CALL_ESTIMATE_REFERENCE_PROFILE, estimateCategoryCallRequirement } from "@/lib/iimb-ug/2027_31/call-score-estimate";
 import { IimbUgSourceBadge } from "./source-badge";
 
 const CATEGORY_ORDER = ["GENERAL", "NC_OBC", "EWS", "SC", "ST", "PWD"] as const;
@@ -83,10 +83,19 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
             <div><span>Class X Mathematics</span><strong>{mathPoints == null ? "Required" : `${formatScore(mathPoints)} / 10`}</strong></div>
             <div><span>Diversity contribution</span><strong>{diversityPoints == null ? "Required" : `${formatScore(diversityPoints)} / 5`}</strong></div>
           </div>
-          <div className="ug-safe-formula-panel">
-            <div className="ug-safe-formula-heading"><span>Calculation trail</span><h3>How the profile contribution is estimated</h3></div>
-            <p className="ug-panel-note">Class X overall: {formatScore(overallPercent ?? 0)}% ÷ 100 × 15 = {formatScore(overallPoints ?? 0)}. Class X Mathematics: {formatScore(mathPercent ?? 0)}% ÷ 100 × 10 = {formatScore(mathPoints ?? 0)}. Diversity: {formatScore(diversityPoints ?? 0)}. Total: {formatScore(profilePoints)} / 30. IIMB uses standardized scores; this direct-percentage calculation is an estimate.</p>
-          </div>
+          {estimate != null && (
+            <div className="ug-safe-formula-panel">
+              <div className="ug-safe-formula-heading"><span>Full calculation trail</span><h3>How every score is derived</h3></div>
+              <ol>
+                <li><b>1</b><div><strong>Calculate your profile contribution / 30</strong><code>({formatScore(overallPercent ?? 0)} ÷ 100 × 15) + ({formatScore(mathPercent ?? 0)} ÷ 100 × 10) + {formatScore(diversityPoints ?? 0)} diversity = {formatScore(profilePoints)} / 30</code><p>The 15, 10 and 5 point weights are official. The site estimates academic points directly from Class X percentages and infers the diversity award from the selected gender. IIMB uses standardized academic scores, so actual profile points may differ.</p></div></li>
+                <li><b>2</b><div><strong>Read your category’s previous-cycle benchmark</strong><code>{formatCategory(historical.resolvedCategory)}: aggregate {benchmark.aggregateCanonicalScoreFloor} / 180; QADI at least {benchmark.qadiPercentileFloor}th percentile</code><p>These are published first-shortlist thresholds for UG Test 2025, not the 2027 interview-call cutoff. The aggregate is interpreted as canonical marks because values such as 114 cannot be percentiles. QADI is a separate percentile rule, not points to add to the total.</p></div></li>
+                <li><b>3</b><div><strong>Estimate a category total target / 100</strong><code>Buffer = ceil({benchmark.aggregateCanonicalScoreFloor} × {formatScore(CALL_ESTIMATE_BUFFER_RATE * 100)}%) = {estimate.buffer}; target = round up to 2 decimals [{CALL_ESTIMATE_REFERENCE_PROFILE} + ({benchmark.aggregateCanonicalScoreFloor} + {estimate.buffer}) × 70 ÷ 180] = {formatScore(estimate.categoryTarget100)} / 100</code><p>The {CALL_ESTIMATE_REFERENCE_PROFILE}/30 reference profile, {formatScore(CALL_ESTIMATE_BUFFER_RATE * 100)}% buffer and 180-to-70 conversion are planning assumptions, not IIMB rules. This estimated category target stays the same when only the student’s profile changes.</p></div></li>
+                <li><b>4</b><div><strong>Subtract what your profile already contributes</strong><code>Remaining exam need = max(0, {formatScore(estimate.categoryTarget100)} − {formatScore(estimate.profilePoints)}) = {formatScore(estimate.profileGap70)} / 70</code><p>This is the direct “category target minus your profile” step. The result is rounded upward to two decimals.</p></div></li>
+                <li><b>5</b><div><strong>Check the historical aggregate gate</strong><code>Approximate exam equivalent = round up [{benchmark.aggregateCanonicalScoreFloor} × 70 ÷ 180] = {formatScore(estimate.historicalGate70)} / 70; final estimate = max({formatScore(estimate.profileGap70)}, {formatScore(estimate.historicalGate70)}) = {formatScore(estimate.examTarget70)} / 70</code><p>This prevents the displayed target from falling below an approximate equivalent of the historical aggregate minimum. The real test conversion is unpublished, so this is not an official gate in weighted points.</p></div></li>
+                <li><b>6</b><div><strong>See the estimated Pre-PI total</strong><code>{formatScore(estimate.profilePoints)} profile + {formatScore(estimate.examTarget70)} exam = {formatScore(estimate.estimatedPrePi100)} / 100</code><p>The exam has an official 70-point weight: QADI 30, LR 20 and VARC 20. A positive score in every section and the separate QADI percentile condition still matter. This total does not guarantee an interview call.</p></div></li>
+              </ol>
+            </div>
+          )}
         </>
       )}
 

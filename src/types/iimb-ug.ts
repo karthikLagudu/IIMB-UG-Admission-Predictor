@@ -65,8 +65,8 @@ export interface IimbUgCandidateInput {
   qadiPercentile?: number;
   overallPercentile?: number;
   varcWeighted20?: number;
-  lrWeighted30?: number;
-  qadiWeighted20?: number;
+  lrWeighted20?: number;
+  qadiWeighted30?: number;
   testWeighted40?: number;
   piPerformancePercent?: number;
   piWeightedScore?: number;

@@ -23,7 +23,7 @@ function testComponent(
   strategy: TestWeightingStrategy,
 ): ScoreComponent {
   const weight = policy.prePi.weights.testSections[section];
-  const directKey = section === "VARC" ? "varcWeighted20" : section === "LR" ? "lrWeighted30" : "qadiWeighted20";
+  const directKey = section === "VARC" ? "varcWeighted20" : section === "LR" ? "lrWeighted20" : "qadiWeighted30";
   if (strategy === "DIRECT_OFFICIAL_WEIGHTED") {
     const weightedValue = candidate[directKey];
     return {
