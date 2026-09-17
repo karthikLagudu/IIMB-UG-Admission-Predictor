@@ -32,7 +32,7 @@ export function EligibilityPanel({ result }: { result: IimbUgPredictionResult })
       <div className="ug-conflict-note">
         <IimbUgSourceBadge source="SOURCE_CONFLICT" />
         <p>{result.eligibility.academics.explanation}</p>
-        <p><strong>Formal procedure:</strong> {result.eligibility.academics.primaryEligibility ? "Pass" : "Fail"} · <strong>FAQ interpretation:</strong> {result.eligibility.academics.alternateEligibility == null ? "Data required" : result.eligibility.academics.alternateEligibility ? "Pass" : "Fail"}</p>
+        <p><strong>Site academic filter (both Class X checks):</strong> {result.eligibility.academics.primaryEligibility ? "Pass" : "Fail"} · <strong>Cycle procedure alone:</strong> {result.eligibility.academics.alternateEligibility ? "Pass" : "Fail"}</p>
       </div>
     </section>
   );

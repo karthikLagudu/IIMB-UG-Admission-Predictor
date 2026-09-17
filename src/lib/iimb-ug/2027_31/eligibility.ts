@@ -88,29 +88,38 @@ export function calculateAcademicEligibility(
       explanation: `The formal 2027–31 procedure requires at least ${policy.eligibility.class10Minimum}% in Class X overall.`,
       sourceType: "OFFICIAL_CURRENT",
     },
-    booleanRule("mathClass11", "Mathematics XI", mathXiPass, "Mathematics must have been studied in Class XI."),
-    booleanRule("mathClass12", "Mathematics XII", mathXiiPass, "Mathematics must have been studied in Class XII."),
-  ];
-  const alternateRules: RuleResult[] = [
     {
       key: "class10Math",
       label: "Class X Mathematics",
       status: mathPercentPass == null ? "DATA_REQUIRED" : mathPercentPass ? "PASS" : "FAIL",
       actual: candidate.class10MathPercent ?? null,
       required: policy.eligibility.class10Minimum,
-      explanation: `The current FAQ states at least ${policy.eligibility.class10Minimum}% in Class X Mathematics.`,
+      explanation: `A minimum of ${policy.eligibility.class10Minimum}% in Class X Mathematics is required by IIMB's programme pages and this site's initial academic filter.`,
+      sourceType: "OFFICIAL_CURRENT",
+    },
+    booleanRule("mathClass11", "Mathematics XI", mathXiPass, "Mathematics must have been studied in Class XI."),
+    booleanRule("mathClass12", "Mathematics XII", mathXiiPass, "Mathematics must have been studied in Class XII."),
+  ];
+  const alternateRules: RuleResult[] = [
+    {
+      key: "class10Overall",
+      label: "Class X overall",
+      status: overallPass ? "PASS" : "FAIL",
+      actual: candidate.class10OverallPercent,
+      required: policy.eligibility.class10Minimum,
+      explanation: `The cycle-specific admission procedure says at least ${policy.eligibility.class10Minimum}% in Class X without specifying Mathematics.`,
       sourceType: "SOURCE_CONFLICT",
     },
     booleanRule("alternateMathClass11", "Mathematics XI", mathXiPass, "Mathematics must have been studied in Class XI."),
     booleanRule("alternateMathClass12", "Mathematics XII", mathXiiPass, "Mathematics must have been studied in Class XII."),
   ];
   return {
-    primaryEligibility: overallPass && mathXiPass && mathXiiPass,
-    alternateEligibility: mathPercentPass == null ? null : mathPercentPass && mathXiPass && mathXiiPass,
+    primaryEligibility: overallPass && mathPercentPass === true && mathXiPass && mathXiiPass,
+    alternateEligibility: overallPass && mathXiPass && mathXiiPass,
     primaryRules,
     alternateRules,
     sourceConflict: true as const,
-    explanation: "The formal current-cycle procedure uses Class X overall marks, while the current-cycle FAQ names Class X Mathematics marks. Both official interpretations are shown.",
+    explanation: "The 2027 admission procedure says at least 60% in Class X; IIMB's programme pages specifically require at least 60% in Class X Mathematics. This site's initial filter requires both and will fail a Mathematics score below 60%.",
   };
 }
 
@@ -136,4 +145,3 @@ export function calculateClass12Eligibility(candidate: IimbUgCandidateInput): Ru
     sourceType: "OFFICIAL_CURRENT",
   };
 }
-

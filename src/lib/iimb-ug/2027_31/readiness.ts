@@ -14,9 +14,10 @@ export function calculateApplicationReadiness(
   eligibility: { agePass: boolean; academicsPass: boolean },
 ): ReadinessItem[] {
   const certificateRequired = candidate.category !== "GENERAL";
+  const class10MarksReady = candidate.class10OverallPercent >= 60 && candidate.class10MathPercent != null && candidate.class10MathPercent >= 60;
   return [
     item("age", "Age eligibility", eligibility.agePass ? "READY" : "VERIFY", eligibility.agePass ? "Age rule passes." : "Age rule must be verified or fails."),
-    item("class10Marks", "Class X marks", candidate.class10MathPercent == null ? "VERIFY" : "READY", candidate.class10MathPercent == null ? "Class X Mathematics marks are needed for the alternate official interpretation and scoring." : "Overall and Mathematics marks supplied."),
+    item("class10Marks", "Class X marks", candidate.class10MathPercent == null ? "VERIFY" : class10MarksReady ? "READY" : "MISSING", candidate.class10MathPercent == null ? "Class X Mathematics marks are required to check the 60% initial academic filter." : class10MarksReady ? "Class X overall and Mathematics both meet the 60% site filter." : "Class X overall or Mathematics is below the 60% site filter."),
     item("math11", "Mathematics XI", candidate.studiedMathClass11 ? "READY" : "MISSING", "Mathematics in Class XI is required."),
     item("math12", "Mathematics XII", candidate.studiedMathClass12 ? "READY" : "MISSING", "Mathematics in Class XII is required."),
     item("class12Status", "Class XII status", candidate.class12Status === "PASSED" ? "READY" : "PENDING", candidate.class12Status === "PASSED" ? "Reported passed." : "Provisional until the final certificate is submitted."),
@@ -30,4 +31,3 @@ export function calculateApplicationReadiness(
     item("reference2", "Reference 2", candidate.reference2Ready ? "READY" : "MISSING", "A second teacher reference submitted online is mandatory after Stage I."),
   ];
 }
-

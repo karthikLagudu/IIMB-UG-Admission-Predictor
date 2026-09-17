@@ -166,8 +166,8 @@ export interface IimbUgPolicyConfig {
     maximumAge: number;
     earliestEligibleDob: string;
     class10Minimum: number;
-    primaryInterpretation: "CYCLE_2027_PROCEDURE";
-    alternateInterpretation: "CYCLE_2027_FAQ";
+    primaryInterpretation: "CONSERVATIVE_BOTH_CLASS10_CHECKS";
+    alternateInterpretation: "CYCLE_2027_PROCEDURE";
     requireMathClass11: boolean;
     requireMathClass12: boolean;
     sourceConflict: true;

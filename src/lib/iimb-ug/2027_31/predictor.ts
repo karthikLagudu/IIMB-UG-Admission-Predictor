@@ -54,7 +54,7 @@ function callOutlook(args: {
   candidate: IimbUgCandidateInput;
   runtime: IimbUgRuntimeData;
 }) {
-  if (!args.eligible) return { label: "INELIGIBLE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The primary current-cycle eligibility interpretation is not satisfied." };
+  if (!args.eligible) return { label: "INELIGIBLE" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The site's initial eligibility filter is not satisfied. Check the age, Class X overall, Class X Mathematics, and Class XI/XII Mathematics rules." };
   if (args.positiveGate === false) return { label: "SECTION_GATE_FAILED" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "At least one section has a non-positive raw score; zero fails the first-shortlist gate." };
   if (args.historical.status === "FAIL" || args.historical.aggregatePass === false) return { label: "BELOW_HISTORICAL_FIRST_SHORTLIST" as const, benchmark: null, gapMinimum: null, gapMaximum: null, explanation: "The profile is below at least one known previous-cycle first-shortlist condition." };
   const benchmark = args.runtime.callBenchmark?.[runtimeCategory(args.candidate)] ?? null;
