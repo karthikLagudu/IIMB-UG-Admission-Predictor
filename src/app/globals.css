@@ -730,7 +730,7 @@
 .ug-sectional-requirements-grid article { padding: 13px; border: 1px solid rgba(126, 62, 82, .16); border-radius: 11px; background: #fff8fa; }
 .ug-sectional-requirements-grid span, .ug-sectional-requirements-grid strong { display: block; }
 .ug-sectional-requirements-grid span { color: #8f1738; font-size: 10px; font-weight: 850; line-height: 1.35; }
-.ug-sectional-requirements-grid strong { margin-top: 9px; color: #21162f; font-size: 15px; line-height: 1.25; }
+.ug-sectional-requirements-grid strong { margin-top: 9px; color: #21162f; font-size: clamp(18px, 2vw, 24px); line-height: 1.2; }
 .ug-sectional-requirements-grid p, .ug-sectional-requirements > p { margin: 8px 0 0; color: #66545e; font-size: 10px; line-height: 1.5; }
 .ug-call-estimate { margin-top: 12px; padding: 20px; border-radius: 14px; background: linear-gradient(135deg, #21162f, #7d1234 64%, #c80d3d); color: white; }
 .ug-call-estimate-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }

@@ -22,6 +22,11 @@ export function estimateCategoryCallRequirement(historicalAggregateFloor: number
   );
   const examTarget70 = Math.max(profileGap70, historicalGate70);
   const estimatedPrePi100 = Math.round((boundedProfile + examTarget70) * 100) / 100;
+  const sectionTargets = {
+    qadi: roundUpHundredth(examTarget70 * 30 / CALL_ESTIMATE_TEST_WEIGHT),
+    varc: roundUpHundredth(examTarget70 * 20 / CALL_ESTIMATE_TEST_WEIGHT),
+    lr: roundUpHundredth(examTarget70 * 20 / CALL_ESTIMATE_TEST_WEIGHT),
+  };
 
   return {
     profilePoints: boundedProfile,
@@ -30,6 +35,7 @@ export function estimateCategoryCallRequirement(historicalAggregateFloor: number
     historicalGate70,
     examTarget70,
     estimatedPrePi100,
+    sectionTargets,
     buffer,
     bufferedAggregate,
     reachable: examTarget70 <= CALL_ESTIMATE_TEST_WEIGHT,
