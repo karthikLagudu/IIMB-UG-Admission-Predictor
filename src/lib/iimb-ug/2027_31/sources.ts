@@ -5,7 +5,7 @@ export const IIMB_UG_SOURCES: PolicySource[] = [
     id: "iimb-ug-2027-procedure",
     title: "IIMB UG Admission Procedure 2027–31",
     institution: "IIM Bangalore",
-    url: "https://ug.iimb.ac.in/wp-content/uploads/2026/08/UG-Admissions-Process_2026.pdf",
+    url: "https://ug.iimb.ac.in/wp-content/uploads/2026/09/UG_Admissions_Process-2026.pdf",
     cycle: "2027-31",
     sourceType: "OFFICIAL_CURRENT",
     verifiedAt: "2026-08-29",

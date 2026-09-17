@@ -711,6 +711,19 @@
 .ug-call-score-notice strong, .ug-call-score-notice p { display: block; }
 .ug-call-score-notice strong { color: #8f1738; font-size: 13px; }
 .ug-call-score-notice p { margin: 5px 0 0; color: #6c5360; font-size: 9px; line-height: 1.55; }
+.ug-category-cutoff { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; }
+.ug-category-cutoff > div { padding: 17px; border-radius: 13px; background: linear-gradient(125deg, #21162f, #aa153f); color: white; }
+.ug-category-cutoff span, .ug-category-cutoff strong { display: block; }
+.ug-category-cutoff span { color: #f3cbd7; font-size: 9px; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
+.ug-category-cutoff strong { margin-top: 8px; font-size: clamp(28px, 3vw, 42px); line-height: 1; }
+.ug-category-cutoff small { color: #f3cbd7; font-size: 12px; font-weight: 600; }
+.ug-category-cutoff-table-wrap { margin-top: 13px; }
+.ug-category-cutoff-table-wrap h3 { margin: 0 0 8px; color: #21162f; font-size: 13px; }
+.ug-category-cutoff-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.ug-category-cutoff-table th, .ug-category-cutoff-table td { padding: 9px 11px; border-bottom: 1px solid #f0dbe2; text-align: left; }
+.ug-category-cutoff-table thead th { color: #775966; font-size: 9px; }
+.ug-category-cutoff-table tbody th { color: #312333; }
+.ug-category-cutoff-table tr.selected { background: #fff0f4; }
 .ug-profile-score-hero { margin-top: 12px; padding: 20px; border-radius: 14px; background: radial-gradient(circle at 100% 0, rgba(255, 90, 131, .26), transparent 40%), linear-gradient(120deg, #21162f, #9e1238); color: white; }
 .ug-profile-score-hero > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .ug-profile-score-hero > div > span { color: #f3cbd7; font-size: 9px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
@@ -795,6 +808,7 @@
   .ug-workspace-section { padding: 36px 0 68px; }
   .ug-call-score-baseline, .ug-call-target-grid { grid-template-columns: 1fr; }
   .ug-benchmark-recommendation { grid-template-columns: 1fr; }
+  .ug-category-cutoff { grid-template-columns: 1fr; }
   .ug-historical-guardrail dl { grid-template-columns: 1fr; }
   .ug-safe-formula-panel ol { grid-template-columns: 1fr; }
   .ug-balanced-plan { grid-template-columns: repeat(2, minmax(0, 1fr)); }
