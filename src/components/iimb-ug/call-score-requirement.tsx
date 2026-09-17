@@ -39,16 +39,12 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
 
       {estimate != null && result.eligibility.status !== "INELIGIBLE" && (
         <div className="ug-call-estimate">
-          <div className="ug-call-estimate-heading"><span>Estimated call-score gap · {formatCategory(historical.resolvedCategory)}</span><IimbUgSourceBadge source="MODEL_ASSUMPTION" /></div>
+          <div className="ug-call-estimate-heading"><span>Estimated score target · {formatCategory(historical.resolvedCategory)}</span><IimbUgSourceBadge source="MODEL_ASSUMPTION" /></div>
           <div className="ug-call-estimate-metrics">
             <div><span>Estimated {formatCategory(historical.resolvedCategory)} total target</span><strong>{formatScore(estimate.categoryTarget100)}<small> / 100</small></strong></div>
-            <div><span>You already have from your profile</span><strong>{formatScore(estimate.profilePoints)}<small> / 30</small></strong></div>
-            <div className="ug-call-estimate-needed"><span>Still needed from the UG Test</span><strong>{estimate.reachable ? formatScore(estimate.examTarget70) : "Above 70"}<small> / 70</small></strong></div>
-            <div className="ug-call-estimate-needed"><span>Equivalent test score to aim for</span><strong>{estimate.reachable ? formatScore(estimate.examTarget180) : "Above 180"}<small> / 180</small></strong></div>
+            <div className="ug-call-estimate-primary"><span>Test score to aim for</span><strong>{estimate.reachable ? formatScore(estimate.examTarget180) : "Above 180"}<small> / 180</small></strong></div>
           </div>
-          <p>{estimate.reachable ? `You have an estimated ${formatScore(estimate.profilePoints)}/30 from your profile. For ${formatCategory(historical.resolvedCategory)}, aim for about ${formatScore(estimate.examTarget70)}/70, equivalent to approximately ${formatScore(estimate.examTarget180)}/180 on the test; together that is an estimated ${formatScore(estimate.estimatedPrePi100)}/100.` : "The estimated category target cannot be reached with the exam maximum from this profile estimate."} This is not a guaranteed interview-call score.</p>
-          <code>{formatScore(estimate.categoryTarget100)} estimated category total − {formatScore(estimate.profilePoints)} profile = {formatScore(estimate.profileGap70)} / 70 remaining; compare with {formatScore(estimate.historicalGate70)} / 70 approximate historical aggregate gate → aim for {formatScore(estimate.examTarget70)} / 70</code>
-          <p>The fixed category target uses a {CALL_ESTIMATE_REFERENCE_PROFILE}/30 reference profile plus ({benchmark.aggregateCanonicalScoreFloor} historical aggregate + {estimate.buffer} assumed 15% buffer) × 70/180. Your profile is then subtracted. The 180-to-70 conversion is only a simplifying assumption; the QADI percentile and positive-section rules still apply separately.</p>
+          <p>{estimate.reachable ? `Based on the selected profile and ${formatCategory(historical.resolvedCategory)} category, aim for approximately ${formatScore(estimate.examTarget180)}/180 on the test.` : "The estimated category target cannot be reached with the test maximum for this profile."} This is a planning estimate, not a guaranteed interview-call score. The full formula remains in the calculation trail below.</p>
         </div>
       )}
 
