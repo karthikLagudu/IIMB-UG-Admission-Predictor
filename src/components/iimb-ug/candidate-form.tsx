@@ -24,7 +24,7 @@ export function CandidateForm(props: CandidateFormProps) {
   };
   return (
     <form className="ug-candidate-form" onSubmit={props.onSubmit} noValidate>
-      <div className="ug-form-heading"><div><span>Candidate profile</span><h2>Check your category cutoff</h2><p className="ug-programme-scope">See the previous-cycle QADI percentile for your category and check basic eligibility for both UG programmes.</p></div></div>
+      <div className="ug-form-heading"><div><span>Candidate profile</span><h2>Build your planning snapshot</h2><p className="ug-programme-scope">One analysis for both B.Sc. (Hons) Data Sciences and B.Sc. (Hons) Economics.</p></div></div>
 
       <fieldset>
         <legend>Eligibility</legend>
@@ -40,7 +40,7 @@ export function CandidateForm(props: CandidateFormProps) {
         <div className="ug-inline-checks"><label><input type="checkbox" checked={candidate.studiedMathClass11} onChange={(event) => update("studiedMathClass11", event.target.checked)} /> Mathematics in Class XI</label><label><input type="checkbox" checked={candidate.studiedMathClass12} onChange={(event) => update("studiedMathClass12", event.target.checked)} /> Mathematics in Class XII</label><label><input type="checkbox" checked={candidate.pwd} onChange={(event) => update("pwd", event.target.checked)} /> PwD candidate</label></div>
       </fieldset>
 
-      <button className="ug-submit" type="submit" disabled={props.busy}>{props.busy ? "Checking…" : "Show percentile cutoff"}</button>
+      <button className="ug-submit" type="submit" disabled={props.busy}>{props.busy ? "Calculating…" : "Calculate score needed"}</button>
     </form>
   );
 }
