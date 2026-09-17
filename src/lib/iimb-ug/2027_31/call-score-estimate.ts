@@ -12,6 +12,8 @@ export function estimateCategoryRawTarget(historicalAggregateFloor: number, prof
   );
   const provisional = historicalAggregateFloor + buffer + profileAdjustment;
   const target = Math.max(historicalAggregateFloor + 1, Math.min(CALL_ESTIMATE_RAW_MAXIMUM, provisional));
+  const examTarget70 = Math.ceil(target * CALL_ESTIMATE_TEST_WEIGHT / CALL_ESTIMATE_RAW_MAXIMUM * 100) / 100;
+  const estimatedPrePi100 = Math.round((boundedProfile + examTarget70) * 100) / 100;
 
-  return { target, buffer, profileAdjustment, provisional };
+  return { target, examTarget70, estimatedPrePi100, profilePoints: boundedProfile, buffer, profileAdjustment, provisional };
 }
