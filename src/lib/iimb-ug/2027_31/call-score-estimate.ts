@@ -21,6 +21,7 @@ export function estimateCategoryCallRequirement(historicalAggregateFloor: number
     historicalAggregateFloor * CALL_ESTIMATE_TEST_WEIGHT / CALL_ESTIMATE_RAW_MAXIMUM,
   );
   const examTarget70 = Math.max(profileGap70, historicalGate70);
+  const examTarget180 = Math.ceil(examTarget70 * CALL_ESTIMATE_RAW_MAXIMUM / CALL_ESTIMATE_TEST_WEIGHT - 1e-9);
   const estimatedPrePi100 = Math.round((boundedProfile + examTarget70) * 100) / 100;
 
   return {
@@ -29,6 +30,7 @@ export function estimateCategoryCallRequirement(historicalAggregateFloor: number
     profileGap70,
     historicalGate70,
     examTarget70,
+    examTarget180,
     estimatedPrePi100,
     buffer,
     bufferedAggregate,
