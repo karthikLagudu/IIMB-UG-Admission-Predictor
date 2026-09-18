@@ -20,7 +20,6 @@ import { iimbUgPredictRequestSchema } from "@/validation/iimb-ug";
 import { CandidateForm } from "./candidate-form";
 import { EligibilityPanel } from "./eligibility-panel";
 import { CallScoreRequirement } from "./call-score-requirement";
-import { SourcesPanel } from "./sources-panel";
 
 type PredictionResponse = IimbUgPredictionResult & {
   policyConfig: IimbUgPolicyConfig;
@@ -160,7 +159,6 @@ export function IimbUgWorkbench() {
             <>
               <CallScoreRequirement result={result} />
               <EligibilityPanel result={result} />
-              <SourcesPanel result={result} />
             </>
           )}
         </div>

@@ -1,6 +1,5 @@
 import { CheckCircle2, CircleAlert, Clock3, XCircle } from "lucide-react";
 import type { IimbUgPredictionResult, RuleResult } from "@/types/iimb-ug";
-import { IimbUgSourceBadge } from "./source-badge";
 
 function icon(status: RuleResult["status"]) {
   if (status === "PASS") return <CheckCircle2 aria-hidden="true" />;
@@ -28,11 +27,6 @@ export function EligibilityPanel({ result }: { result: IimbUgPredictionResult })
             <div><span>{rule.label}</span><strong>{rule.status.replaceAll("_", " ")}</strong><small>{rule.explanation}</small></div>
           </article>
         ))}
-      </div>
-      <div className="ug-conflict-note">
-        <IimbUgSourceBadge source="SOURCE_CONFLICT" />
-        <p>{result.eligibility.academics.explanation}</p>
-        <p><strong>Site planning filter (38.4% overall, 60% Mathematics):</strong> {result.eligibility.academics.primaryEligibility ? "Pass" : "Fail"} · <strong>Published cycle procedure (60% overall):</strong> {result.eligibility.academics.alternateEligibility ? "Pass" : "Fail"}</p>
       </div>
     </section>
   );

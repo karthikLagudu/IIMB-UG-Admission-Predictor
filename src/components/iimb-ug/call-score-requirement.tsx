@@ -36,13 +36,12 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
         <div className="ug-call-estimate">
           <div className="ug-call-estimate-heading"><span>Estimated score target · {formatCategory(historical.resolvedCategory)}</span><IimbUgSourceBadge source="MODEL_ASSUMPTION" /></div>
           <div className="ug-call-estimate-metrics">
-            <div><span>This Year&apos;s Estimated Total Target · {formatCategory(historical.resolvedCategory)}</span><strong>{formatScore(estimate.thisYearCategoryTarget100)}<small> / 100</small></strong><em>This Year&apos;s Estimated Cut off</em></div>
-            <div className="ug-call-estimate-primary"><span>Test score to aim for</span><strong>{estimate.reachable ? formatScore(estimate.examTarget180) : "Above 180"}<small> / 180</small></strong></div>
+            <div><span>Test score to aim for</span><strong>{estimate.reachable ? formatScore(estimate.examTarget180) : "Above 180"}<small> / 180</small></strong></div>
+            <div className="ug-call-estimate-primary"><span>Safe Score</span><strong>{estimate.safeScoreReachable ? formatScore(estimate.safeScore180) : "Above 180"}{estimate.safeScoreReachable && <small> / 180</small>}</strong></div>
           </div>
-          <div className="ug-safe-score-target">
-            <div><span>Safe Score</span><strong>{estimate.safeScoreReachable ? formatScore(estimate.safeScore180) : "Above 180"}{estimate.safeScoreReachable && <small> / 180</small>}</strong></div>
-            <code>ceil({formatScore(estimate.examTarget180)} + {formatScore(estimate.examTarget180)} × {formatScore(SAFE_SCORE_BUFFER_RATE * 100)}%) = {formatScore(estimate.safeScore180)}</code>
-            <p>The safe score adds 5% to the test score to aim for and rounds upward to the next whole mark. It is a planning buffer, not an official cutoff or guarantee.</p>
+          <div className="ug-this-year-target">
+            <div><span>This Year&apos;s Estimated Total Target · {formatCategory(historical.resolvedCategory)}</span><strong>{formatScore(estimate.thisYearCategoryTarget100)}<small> / 100</small></strong><em>This Year&apos;s Estimated Cut off</em></div>
+            <p>The Safe Score above adds {formatScore(SAFE_SCORE_BUFFER_RATE * 100)}% to the test score to aim for. Both values are planning estimates, not official cutoffs or guarantees.</p>
           </div>
           <p>{estimate.reachable ? `Based on the selected profile and ${formatCategory(historical.resolvedCategory)} category, aim for approximately ${formatScore(estimate.examTarget180)}/180 on the test.` : "The estimated category target cannot be reached with the test maximum for this profile."} This is a planning estimate, not a guaranteed interview-call score.</p>
         </div>
@@ -67,7 +66,6 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
         </>
       )}
 
-      <p className="ug-call-section-warning">The first shortlist also requires a positive score in VARC, LR and QADI. The QADI percentile and aggregate benchmark must both be considered; neither guarantees an interview call.</p>
     </section>
   );
 }
