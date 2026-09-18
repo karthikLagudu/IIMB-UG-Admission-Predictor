@@ -1,7 +1,6 @@
 import { z } from "zod";
 import type { IimbUgPolicyConfig } from "@/types/iimb-ug";
 import { SCORE_TOLERANCE } from "../lib/iimb-ug/2027_31/constants";
-import { IIMB_UG_2027_POLICY } from "../lib/iimb-ug/2027_31/policy";
 
 const percent = z.number().finite().min(0).max(100);
 const percentile = z.number().finite().min(0).max(100);
@@ -35,7 +34,7 @@ export const iimbUgCandidateSchema = z.object({
   pwd: z.boolean(),
   gender: z.enum(["MALE", "FEMALE", "TRANSGENDER"]),
   class10Board: z.string().trim().min(1).max(120).optional(),
-  class10OverallPercent: percent.min(IIMB_UG_2027_POLICY.eligibility.class10OverallPlanningMinimum),
+  class10OverallPercent: percent,
   class10MathPercent: percent,
   studiedMathClass11: z.boolean(),
   studiedMathClass12: z.boolean(),
