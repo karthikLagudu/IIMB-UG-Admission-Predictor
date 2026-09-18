@@ -154,7 +154,7 @@ export function IimbUgWorkbench() {
 
         <div className="ug-results" id="ug-results" aria-live="polite">
           {!result ? (
-            <section className="ug-empty-state"><span>30% profile · 70% exam</span><h2>Your profile score and exam target will appear here</h2><p>Enter the student’s category and academic details to see an estimated profile contribution out of 30 and a category-adjusted exam target out of 70.</p><div><strong>Profile / 30</strong><strong>Exam target / 70</strong><strong>Calculation shown</strong></div></section>
+            <section className="ug-empty-state"><span>30% profile · 70% exam</span><h2>Your profile score and exam target will appear here</h2><p>Enter the student’s category and academic details to see an estimated profile contribution out of 30 and a category-adjusted exam target out of 70.</p></section>
           ) : (
             <>
               <CallScoreRequirement result={result} />

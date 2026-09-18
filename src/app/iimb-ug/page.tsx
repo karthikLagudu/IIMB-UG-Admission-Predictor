@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { BarChart3, BookOpenCheck, Calculator, ShieldCheck } from "lucide-react";
 import { IimbUgWorkbench } from "@/components/iimb-ug/iimb-ug-workbench";
 
 const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
@@ -37,9 +36,6 @@ export default function IimbUgPage() {
             <p>See your estimated profile contribution out of 30 and the UG Test score to aim for out of 70, based on your category. The 2027 interview-call cutoff is not published.</p>
           </div>
         </div>
-      </section>
-      <section className="ug-trust-strip" aria-label="Predictor capabilities">
-        <div className="shell"><article><ShieldCheck aria-hidden="true" /><div><strong>Eligibility gates</strong><span>Age and academics</span></div></article><article><Calculator aria-hidden="true" /><div><strong>Category cutoff</strong><span>QADI and aggregate</span></div></article><article><BarChart3 aria-hidden="true" /><div><strong>Clear limits</strong><span>No invented call score</span></div></article><article><BookOpenCheck aria-hidden="true" /><div><strong>Source provenance</strong><span>Current vs historical</span></div></article></div>
       </section>
       <section className="ug-workspace-section"><div className="shell"><IimbUgWorkbench /></div></section>
     </div>
