@@ -32,7 +32,7 @@ const REQUIRED_FIELD_MESSAGES: Record<string, { label: string; message: string }
   "candidate.dateOfBirth": { label: "Date of birth", message: "Enter a valid date of birth." },
   "candidate.category": { label: "Category", message: "Select a category." },
   "candidate.gender": { label: "Gender", message: "Select a gender." },
-  "candidate.class10OverallPercent": { label: "Class X overall %", message: "Enter the Class X overall percentage." },
+  "candidate.class10OverallPercent": { label: "Class X overall %", message: "Enter a Class X overall percentage from 38.4% to 100%." },
   "candidate.class10MathPercent": { label: "Class X Mathematics %", message: "Enter the Class X Mathematics percentage." },
   "candidate.class12Status": { label: "Class XII status", message: "Select the Class XII status." },
 };
