@@ -37,7 +37,7 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
           <div className="ug-call-estimate-heading"><span>Estimated score target · {formatCategory(historical.resolvedCategory)}</span><IimbUgSourceBadge source="MODEL_ASSUMPTION" /></div>
           <div className="ug-call-estimate-metrics">
             <div><span>Test score to aim for</span><strong>{estimate.reachable ? formatScore(estimate.examTarget180) : "Above 180"}<small> / 180</small></strong></div>
-            <div className="ug-call-estimate-primary"><span>Safe Score</span><strong>{estimate.safeScoreReachable ? formatScore(estimate.safeScore180) : "Above 180"}{estimate.safeScoreReachable && <small> / 180</small>}</strong></div>
+            <div className="ug-call-estimate-primary"><span>Safe Score</span><strong>{formatScore(estimate.safeScore180)}<small> / 180</small></strong></div>
           </div>
           <div className="ug-this-year-target">
             <div><span>This Year&apos;s Estimated Total Target · {formatCategory(historical.resolvedCategory)}</span><strong>{formatScore(estimate.thisYearCategoryTarget100)}<small> / 100</small></strong><em>This Year&apos;s Estimated Cut off</em></div>

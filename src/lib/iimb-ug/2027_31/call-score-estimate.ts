@@ -28,7 +28,10 @@ export function estimateCategoryCallRequirement(historicalAggregateFloor: number
   const examTarget70 = Math.max(0, thisYearCategoryTarget100 - boundedProfile);
   const profileGap70 = roundUpHundredth(examTarget70);
   const examTarget180 = Math.ceil(examTarget70 * CALL_ESTIMATE_RAW_MAXIMUM / CALL_ESTIMATE_TEST_WEIGHT - 1e-9);
-  const safeScore180 = Math.ceil(examTarget180 * (1 + SAFE_SCORE_BUFFER_RATE) - 1e-9);
+  const safeScore180 = Math.min(
+    CALL_ESTIMATE_RAW_MAXIMUM,
+    Math.ceil(examTarget180 * (1 + SAFE_SCORE_BUFFER_RATE) - 1e-9),
+  );
   const estimatedPrePi100 = Math.round((boundedProfile + examTarget70) * 100) / 100;
 
   return {
@@ -44,6 +47,5 @@ export function estimateCategoryCallRequirement(historicalAggregateFloor: number
     buffer,
     bufferedAggregate,
     reachable: examTarget70 <= CALL_ESTIMATE_TEST_WEIGHT,
-    safeScoreReachable: safeScore180 <= CALL_ESTIMATE_RAW_MAXIMUM,
   };
 }

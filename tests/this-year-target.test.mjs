@@ -21,3 +21,9 @@ for (const [category, historicalFloor, previousYearTarget, expectedThisYearTarge
     assert.equal(estimate.safeScore180, expectedSafeScore);
   });
 }
+
+test("safe score is capped at the 180-point test maximum", () => {
+  const estimate = estimateCategoryCallRequirement(114, 0);
+  assert.ok(estimate.examTarget180 > 180);
+  assert.equal(estimate.safeScore180, 180);
+});
