@@ -69,6 +69,9 @@
 .ug-field-grid label { min-width: 0; }
 .ug-field-grid label > span { display: block; margin-bottom: 5px; color: #536075; font-size: 9px; font-weight: 750; }
 .ug-candidate-form input:not([type="checkbox"]):not([type="range"]), .ug-candidate-form select { width: 100%; min-width: 0; min-height: 39px; padding: 8px 9px; border: 1px solid #cbd5e2; border-radius: 8px; background: white; color: #111b33; font-size: 11px; }
+.ug-candidate-form input[type="number"] { appearance: textfield; -moz-appearance: textfield; }
+.ug-candidate-form input[type="number"]::-webkit-inner-spin-button,
+.ug-candidate-form input[type="number"]::-webkit-outer-spin-button { margin: 0; -webkit-appearance: none; }
 .ug-candidate-form input:read-only { background: #f4f6f9 !important; color: #617087 !important; }
 .ug-check-grid { display: grid; gap: 8px; margin-bottom: 11px; }
 .ug-check-card { display: flex; align-items: center; gap: 9px; padding: 10px; border: 1px solid #d8e0eb; border-radius: 9px; background: #fbfcff; color: #26334c; font-size: 10px; font-weight: 700; cursor: pointer; }
@@ -729,6 +732,19 @@
 .ug-this-year-target strong small { color: #f2c7d2; font-size: 13px; }
 .ug-this-year-target em { display: block; width: fit-content; margin-top: 9px; padding: 4px 7px; border: 1px solid rgba(255,255,255,.25); border-radius: 999px; color: #ffe4eb; font-size: 8px; font-style: normal; font-weight: 850; letter-spacing: .04em; text-transform: uppercase; }
 .ug-this-year-target p { margin: 10px 0 0; color: #f4dce3; font-size: 10px; line-height: 1.5; }
+.ug-raw-cutoff-dropdown { margin-top: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,.28); border-radius: 11px; background: rgba(255,255,255,.1); }
+.ug-raw-cutoff-dropdown summary { position: relative; padding: 13px 44px 13px 15px; color: #ffe7ee; cursor: pointer; font-size: 10px; font-weight: 900; letter-spacing: .025em; list-style: none; }
+.ug-raw-cutoff-dropdown summary::-webkit-details-marker { display: none; }
+.ug-raw-cutoff-dropdown summary::after { position: absolute; top: 50%; right: 16px; content: "+"; color: #fff; font-size: 18px; line-height: 1; transform: translateY(-50%); }
+.ug-raw-cutoff-dropdown[open] summary::after { content: "−"; }
+.ug-raw-cutoff-table-wrap { overflow-x: auto; border-top: 1px solid rgba(255,255,255,.2); }
+.ug-raw-cutoff-dropdown table { width: 100%; min-width: 520px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.ug-raw-cutoff-dropdown th, .ug-raw-cutoff-dropdown td { padding: 11px 15px; border-bottom: 1px solid rgba(255,255,255,.14); color: #fff2f6; text-align: left; font-size: 10px; }
+.ug-raw-cutoff-dropdown thead th { color: #f2cbd6; font-size: 8px; letter-spacing: .05em; text-transform: uppercase; }
+.ug-raw-cutoff-dropdown tbody th { font-weight: 900; }
+.ug-raw-cutoff-dropdown tbody tr.is-selected { background: rgba(255,255,255,.13); }
+.ug-raw-cutoff-dropdown tbody tr:last-child > * { border-bottom: 0; }
+.ug-raw-cutoff-dropdown > p { margin: 0; padding: 11px 15px; border-top: 1px solid rgba(255,255,255,.2); color: #f4dce3; font-size: 9px; line-height: 1.5; }
 .ug-call-estimate > p { margin: 9px 0 0; color: #f4dce3; font-size: 10px; line-height: 1.55; }
 .ug-call-estimate > code { display: block; margin-top: 12px; padding: 10px; border: 1px solid rgba(255,255,255,.22); border-radius: 8px; color: #ffe8ee; font-size: 10px; line-height: 1.5; white-space: normal; overflow-wrap: anywhere; }
 .ug-profile-score-hero { margin-top: 12px; padding: 20px; border-radius: 14px; background: radial-gradient(circle at 100% 0, rgba(255, 90, 131, .26), transparent 40%), linear-gradient(120deg, #21162f, #9e1238); color: white; }

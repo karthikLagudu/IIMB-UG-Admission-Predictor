@@ -1,6 +1,13 @@
 import type { IimbUgPredictionResult } from "@/types/iimb-ug";
-import { SAFE_SCORE_BUFFER_RATE, estimateCategoryCallRequirement } from "@/lib/iimb-ug/2027_31/call-score-estimate";
+import {
+  SAFE_SCORE_BUFFER_RATE,
+  estimateCategoryCallRequirement,
+  estimateExpectedThisYearRawCutoff,
+} from "@/lib/iimb-ug/2027_31/call-score-estimate";
+import { IIMB_UG_2027_POLICY } from "@/lib/iimb-ug/2027_31/policy";
 import { IimbUgSourceBadge } from "./source-badge";
+
+const RAW_SCORE_CATEGORIES = ["GENERAL", "NC_OBC", "EWS", "SC", "ST", "PWD"] as const;
 
 function formatScore(value: number) {
   return value.toFixed(2).replace(/\.00$/, "");
@@ -43,6 +50,27 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
             <div><span>This Year&apos;s Estimated Total Target · {formatCategory(historical.resolvedCategory)}</span><strong>{formatScore(estimate.thisYearCategoryTarget100)}<small> / 100</small></strong><em>This Year&apos;s Estimated Cut off</em></div>
             <p>The Safe Score above adds {formatScore(SAFE_SCORE_BUFFER_RATE * 100)}% to the test score to aim for. Both values are planning estimates, not official cutoffs or guarantees.</p>
           </div>
+          <details className="ug-raw-cutoff-dropdown">
+            <summary>View last and expected raw-score cutoffs for all categories</summary>
+            <div className="ug-raw-cutoff-table-wrap">
+              <table>
+                <thead><tr><th>Category</th><th>Last raw-score cutoff</th><th>This year&apos;s expected raw-score cutoff</th></tr></thead>
+                <tbody>
+                  {RAW_SCORE_CATEGORIES.map((category) => {
+                    const lastRawCutoff = IIMB_UG_2027_POLICY.historical.thresholds[category].aggregateCanonicalScoreFloor;
+                    return (
+                      <tr key={category} className={category === historical.resolvedCategory ? "is-selected" : undefined}>
+                        <th>{formatCategory(category)}</th>
+                        <td>{lastRawCutoff} / 180</td>
+                        <td>{estimateExpectedThisYearRawCutoff(lastRawCutoff)} / 180</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <p>This year&apos;s expected cutoff is calculated as the last raw-score cutoff × 1.125, rounded to the nearest whole number.</p>
+          </details>
           <p>{estimate.reachable ? `Based on the selected profile and ${formatCategory(historical.resolvedCategory)} category, aim for approximately ${formatScore(estimate.examTarget180)}/180 on the test.` : "The estimated category target cannot be reached with the test maximum for this profile."} This is a planning estimate, not a guaranteed interview-call score.</p>
         </div>
       )}

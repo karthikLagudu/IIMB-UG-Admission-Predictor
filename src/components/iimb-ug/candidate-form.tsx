@@ -34,6 +34,9 @@ export function CandidateForm(props: CandidateFormProps) {
   const number = (key: keyof IimbUgCandidateDraft, raw: string) => {
     update(key, (raw === "" ? undefined : Number(raw)) as never);
   };
+  const percentage = (key: "class10OverallPercent" | "class10MathPercent", raw: string) => {
+    update(key, (raw === "" ? undefined : Math.min(Number(raw), 100)) as never);
+  };
   const updateCategory = (value: string) => {
     setCandidate((current) => value === "PWD"
       ? { ...current, category: "GENERAL", pwd: true }
@@ -52,7 +55,15 @@ export function CandidateForm(props: CandidateFormProps) {
   };
   const dayCount = daysInMonth(dobParts.month, dobParts.year);
   return (
-    <form className="ug-candidate-form" onSubmit={props.onSubmit} noValidate>
+    <form
+      className="ug-candidate-form"
+      onSubmit={props.onSubmit}
+      onWheelCapture={(event) => {
+        const target = event.target;
+        if (target instanceof HTMLInputElement && target.type === "number") target.blur();
+      }}
+      noValidate
+    >
       <div className="ug-form-heading"><div><span>Candidate profile</span><h2>Build your planning snapshot</h2><p className="ug-programme-scope">One analysis for both B.Sc. (Hons) Data Sciences and B.Sc. (Hons) Economics.</p></div></div>
 
       <fieldset>
@@ -61,8 +72,8 @@ export function CandidateForm(props: CandidateFormProps) {
           <div className={`ug-dob-field ${fieldIssue("dateOfBirth") ? "has-error" : ""}`}><span id="ug-dob-label">Date of birth</span><div className="ug-dob-controls" role="group" aria-labelledby="ug-dob-label"><select aria-label="Birth day" value={dobParts.day} onChange={(event) => updateDob("day", event.target.value)} required><option value="">Day</option>{Array.from({ length: dayCount }, (_, index) => String(index + 1).padStart(2, "0")).map((day) => <option key={day} value={day}>{Number(day)}</option>)}</select><select aria-label="Birth month" value={dobParts.month} onChange={(event) => updateDob("month", event.target.value)} required><option value="">Month</option>{MONTHS.map((month, index) => <option key={month} value={String(index + 1).padStart(2, "0")}>{month}</option>)}</select><input data-field="dateOfBirth" aria-label="Birth year" aria-invalid={Boolean(fieldIssue("dateOfBirth"))} type="text" inputMode="numeric" pattern="[0-9]{4}" maxLength={4} placeholder="Year" value={dobParts.year} onChange={(event) => updateDob("year", event.target.value.replace(/\D/g, ""))} required /></div>{fieldIssue("dateOfBirth") && <small className="ug-field-error">Select a valid day and month, then enter a four-digit year.</small>}</div>
           <label className={fieldIssue("category") ? "has-error" : ""}><span>Category</span><select data-field="category" aria-invalid={Boolean(fieldIssue("category"))} value={candidate.pwd ? "PWD" : candidate.category} onChange={(event) => updateCategory(event.target.value)} required><option value="" disabled>Select category</option><option value="GENERAL">General</option><option value="EWS">EWS</option><option value="NC_OBC">NC-OBC</option><option value="SC">SC</option><option value="ST">ST</option><option value="PWD">PwD</option></select>{fieldIssue("category") && <small className="ug-field-error">Please select a category.</small>}</label>
           <label className={fieldIssue("gender") ? "has-error" : ""}><span>Gender</span><select data-field="gender" aria-invalid={Boolean(fieldIssue("gender"))} value={candidate.gender} onChange={(event) => update("gender", event.target.value as IimbUgCandidateDraft["gender"])} required><option value="" disabled>Select gender</option><option value="MALE">Male</option><option value="FEMALE">Female</option><option value="TRANSGENDER">Transgender</option></select>{fieldIssue("gender") && <small className="ug-field-error">Please select a gender.</small>}</label>
-          <label className={fieldIssue("class10OverallPercent") ? "has-error" : ""}><span>Class X overall %</span><input data-field="class10OverallPercent" aria-invalid={Boolean(fieldIssue("class10OverallPercent"))} type="number" min="0" max="100" step="0.01" value={candidate.class10OverallPercent ?? ""} onChange={(event) => number("class10OverallPercent", event.target.value)} required />{fieldIssue("class10OverallPercent") && <small className="ug-field-error">Enter a Class X overall percentage from 0% to 100%.</small>}</label>
-          <label className={fieldIssue("class10MathPercent") ? "has-error" : ""}><span>Class X Mathematics %</span><input data-field="class10MathPercent" aria-invalid={Boolean(fieldIssue("class10MathPercent"))} type="number" min="0" max="100" step="0.01" value={candidate.class10MathPercent ?? ""} onChange={(event) => number("class10MathPercent", event.target.value)} required />{fieldIssue("class10MathPercent") && <small className="ug-field-error">Please enter your Class X Mathematics percentage.</small>}</label>
+          <label className={fieldIssue("class10OverallPercent") ? "has-error" : ""}><span>Class X overall %</span><input data-field="class10OverallPercent" aria-invalid={Boolean(fieldIssue("class10OverallPercent"))} type="number" min="0" max="100" step="0.01" value={candidate.class10OverallPercent ?? ""} onChange={(event) => percentage("class10OverallPercent", event.target.value)} required />{fieldIssue("class10OverallPercent") && <small className="ug-field-error">Enter a Class X overall percentage from 0% to 100%.</small>}</label>
+          <label className={fieldIssue("class10MathPercent") ? "has-error" : ""}><span>Class X Mathematics %</span><input data-field="class10MathPercent" aria-invalid={Boolean(fieldIssue("class10MathPercent"))} type="number" min="0" max="100" step="0.01" value={candidate.class10MathPercent ?? ""} onChange={(event) => percentage("class10MathPercent", event.target.value)} required />{fieldIssue("class10MathPercent") && <small className="ug-field-error">Please enter your Class X Mathematics percentage.</small>}</label>
           <label className={fieldIssue("class12Status") ? "has-error" : ""}><span>Class XII status</span><select data-field="class12Status" aria-invalid={Boolean(fieldIssue("class12Status"))} value={candidate.class12Status} onChange={(event) => update("class12Status", event.target.value as IimbUgCandidateDraft["class12Status"])} required><option value="" disabled>Select status</option><option value="PASSED">Passed</option><option value="APPEARING">Appearing</option><option value="RESULT_AWAITED">Result awaited</option></select>{fieldIssue("class12Status") && <small className="ug-field-error">Please select your Class XII status.</small>}</label>
           <label><span>Class XII % (optional)</span><input type="number" min="0" max="100" step="0.01" value={candidate.class12Percent ?? ""} onChange={(event) => number("class12Percent", event.target.value)} /></label>
         </div>

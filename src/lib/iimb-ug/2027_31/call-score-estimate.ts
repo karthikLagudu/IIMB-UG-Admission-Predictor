@@ -5,10 +5,15 @@ export const CALL_ESTIMATE_RAW_MAXIMUM = 180;
 export const CALL_ESTIMATE_TEST_WEIGHT = 70;
 export const THIS_YEAR_TARGET_INCREMENT_DIVISOR = 8;
 export const PREVIOUS_YEAR_TARGET_ADJUSTMENT = 1.34;
+export const EXPECTED_RAW_CUTOFF_MULTIPLIER = 1.125;
 export const SAFE_SCORE_BUFFER_RATE = 0.05;
 
 function roundUpHundredth(value: number) {
   return Math.ceil(value * 100 - 1e-9) / 100;
+}
+
+export function estimateExpectedThisYearRawCutoff(historicalRawCutoff: number) {
+  return Math.round(historicalRawCutoff * EXPECTED_RAW_CUTOFF_MULTIPLIER);
 }
 
 export function estimateCategoryCallRequirement(historicalAggregateFloor: number, profilePoints: number) {
@@ -27,7 +32,13 @@ export function estimateCategoryCallRequirement(historicalAggregateFloor: number
   );
   const examTarget70 = Math.max(0, thisYearCategoryTarget100 - boundedProfile);
   const profileGap70 = roundUpHundredth(examTarget70);
-  const examTarget180 = Math.ceil(examTarget70 * CALL_ESTIMATE_RAW_MAXIMUM / CALL_ESTIMATE_TEST_WEIGHT - 1e-9);
+  // Preserve the profile-based raw-score calculation, then apply this year's
+  // category estimate as a minimum score floor.
+  const generatedExamTarget180 = Math.ceil(
+    examTarget70 * CALL_ESTIMATE_RAW_MAXIMUM / CALL_ESTIMATE_TEST_WEIGHT - 1e-9,
+  );
+  const expectedThisYearRawCutoff180 = estimateExpectedThisYearRawCutoff(historicalAggregateFloor);
+  const examTarget180 = Math.max(generatedExamTarget180, expectedThisYearRawCutoff180);
   const safeScore180 = Math.min(
     CALL_ESTIMATE_RAW_MAXIMUM,
     Math.ceil(examTarget180 * (1 + SAFE_SCORE_BUFFER_RATE) - 1e-9),
@@ -41,11 +52,13 @@ export function estimateCategoryCallRequirement(historicalAggregateFloor: number
     thisYearCategoryTarget100,
     profileGap70,
     examTarget70,
+    generatedExamTarget180,
+    expectedThisYearRawCutoff180,
     examTarget180,
     safeScore180,
     estimatedPrePi100,
     buffer,
     bufferedAggregate,
-    reachable: examTarget70 <= CALL_ESTIMATE_TEST_WEIGHT,
+    reachable: examTarget180 <= CALL_ESTIMATE_RAW_MAXIMUM,
   };
 }
