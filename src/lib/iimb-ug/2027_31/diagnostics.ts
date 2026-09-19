@@ -2,7 +2,7 @@ import type { IimbUgPredictionResult } from "@/types/iimb-ug";
 
 export function buildWarnings(result: Pick<IimbUgPredictionResult, "eligibility" | "historicalShortlist" | "prePi">): string[] {
   const warnings = [
-    "This site's planning filter uses 38.4% in Class X overall and 60% in Mathematics. IIMB's published 2027 procedure requires 60% in Class X overall; passing the lower site filter does not establish official eligibility.",
+    "The initial academic filter requires at least 60% in both Class X overall and Class X Mathematics.",
     "The historical Aggregate column is treated as a canonical raw-score floor, not a percentile.",
     "Current 2027 first-shortlist and interview-call thresholds are not published.",
   ];

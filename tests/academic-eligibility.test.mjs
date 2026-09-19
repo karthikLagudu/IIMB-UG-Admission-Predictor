@@ -24,18 +24,12 @@ test("Class X Mathematics at 59.99% fails even with strong overall marks", () =>
   assert.equal(result.alternateEligibility, true);
 });
 
-test("Class X overall at 38.4% passes the site filter but not the published rule", () => {
-  const result = calculateAcademicEligibility({ ...candidate, class10OverallPercent: 38.4 }, IIMB_UG_2027_POLICY);
-  assert.equal(result.primaryEligibility, true);
-  assert.equal(result.primaryRules.find((rule) => rule.key === "class10Overall")?.status, "PASS");
-  assert.equal(result.alternateEligibility, false);
-  assert.equal(result.alternateRules.find((rule) => rule.key === "class10Overall")?.status, "FAIL");
-});
-
-test("Class X overall below 38.4% fails the site filter", () => {
-  const result = calculateAcademicEligibility({ ...candidate, class10OverallPercent: 38.39 }, IIMB_UG_2027_POLICY);
+test("Class X overall at 59.99% fails the 60% minimum", () => {
+  const result = calculateAcademicEligibility({ ...candidate, class10OverallPercent: 59.99 }, IIMB_UG_2027_POLICY);
   assert.equal(result.primaryEligibility, false);
   assert.equal(result.primaryRules.find((rule) => rule.key === "class10Overall")?.status, "FAIL");
+  assert.equal(result.alternateEligibility, false);
+  assert.equal(result.alternateRules.find((rule) => rule.key === "class10Overall")?.status, "FAIL");
 });
 
 test("Class X overall at 60% passes both checks", () => {

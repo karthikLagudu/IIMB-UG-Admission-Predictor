@@ -86,8 +86,8 @@ export function calculateAcademicEligibility(
       status: overallPass ? "PASS" : "FAIL",
       actual: candidate.class10OverallPercent,
       required: policy.eligibility.class10OverallPlanningMinimum,
-      explanation: `This site's initial planning filter requires at least ${policy.eligibility.class10OverallPlanningMinimum}% in Class X overall. IIMB's 2027–31 procedure states ${policy.eligibility.class10Minimum}% in Class X; the lower site threshold is not official.`,
-      sourceType: "MODEL_ASSUMPTION",
+      explanation: `A minimum of ${policy.eligibility.class10OverallPlanningMinimum}% in Class X overall is required by this site's initial academic filter and IIMB's 2027–31 procedure.`,
+      sourceType: "OFFICIAL_CURRENT",
     },
     {
       key: "class10Math",
@@ -120,7 +120,7 @@ export function calculateAcademicEligibility(
     primaryRules,
     alternateRules,
     sourceConflict: true as const,
-    explanation: `The site's planning filter requires ${policy.eligibility.class10OverallPlanningMinimum}% in Class X overall and ${policy.eligibility.class10Minimum}% in Mathematics. IIMB's 2027 admission procedure says at least ${policy.eligibility.class10Minimum}% in Class X, while its programme pages specify ${policy.eligibility.class10Minimum}% in Class X Mathematics. Passing the site filter below ${policy.eligibility.class10Minimum}% overall does not establish official eligibility.`,
+    explanation: `The site's initial filter requires at least ${policy.eligibility.class10OverallPlanningMinimum}% in Class X overall and ${policy.eligibility.class10Minimum}% in Class X Mathematics. Mathematics in both Classes XI and XII is also required.`,
   };
 }
 

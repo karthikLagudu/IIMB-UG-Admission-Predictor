@@ -22,9 +22,12 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
   const benchmark = historical.benchmark;
   const { prePi } = result;
   const profilePoints = prePi.prePi == null || prePi.test70 == null ? null : prePi.prePi - prePi.test70;
-  const overallPoints = prePi.components.find((component) => component.key === "prepi-class10Overall")?.weightedValue;
-  const mathPoints = prePi.components.find((component) => component.key === "prepi-class10Math")?.weightedValue;
-  const diversityPoints = prePi.components.find((component) => component.key === "prepi-gender")?.weightedValue;
+  const overallComponent = prePi.components.find((component) => component.key === "prepi-class10Overall");
+  const mathComponent = prePi.components.find((component) => component.key === "prepi-class10Math");
+  const diversityComponent = prePi.components.find((component) => component.key === "prepi-gender");
+  const overallPoints = overallComponent?.weightedValue;
+  const mathPoints = mathComponent?.weightedValue;
+  const diversityPoints = diversityComponent?.weightedValue;
   const estimate = profilePoints == null ? null : estimateCategoryCallRequirement(benchmark.aggregateCanonicalScoreFloor, profilePoints);
 
   return (
@@ -91,8 +94,51 @@ export function CallScoreRequirement({ result }: { result: IimbUgPredictionResul
             <div><span>Class X Mathematics</span><strong>{mathPoints == null ? "Required" : `${formatScore(mathPoints)} / 10`}</strong></div>
             <div><span>Diversity contribution</span><strong>{diversityPoints == null ? "Required" : `${formatScore(diversityPoints)} / 5`}</strong></div>
           </div>
+          <details className="ug-profile-formulas" aria-labelledby="ug-profile-formulas-heading">
+            <summary id="ug-profile-formulas-heading"><span className="ug-info-symbol" aria-hidden="true">i</span><span>How did we calculate?</span></summary>
+            <div className="ug-profile-formulas-body">
+              <div className="ug-profile-formulas-heading">
+                <span>Profile score formula</span>
+                <h3>How your candidate profile marks are allotted</h3>
+              </div>
+              <div className="ug-profile-formula-grid">
+                <article>
+                  <span>Class X overall · maximum 15 marks</span>
+                  <code>(Overall % ÷ 100) × 15</code>
+                  <strong>{overallComponent?.rawValue == null || overallPoints == null ? "Required" : `(${formatScore(overallComponent.rawValue)} ÷ 100) × 15 = ${formatScore(overallPoints)}`}</strong>
+                </article>
+                <article>
+                  <span>Class X Mathematics · maximum 10 marks</span>
+                  <code>(Mathematics % ÷ 100) × 10</code>
+                  <strong>{mathComponent?.rawValue == null || mathPoints == null ? "Required" : `(${formatScore(mathComponent.rawValue)} ÷ 100) × 10 = ${formatScore(mathPoints)}`}</strong>
+                </article>
+                <article>
+                  <span>Diversity contribution · maximum 5 marks</span>
+                  <code>Female or transgender = 5; otherwise = 0</code>
+                  <strong>{diversityPoints == null ? "Required" : `Candidate diversity marks = ${formatScore(diversityPoints)}`}</strong>
+                </article>
+              </div>
+              <div className="ug-profile-total-formula">
+                <span>Candidate profile total</span>
+                <code>Overall marks + Mathematics marks + Diversity marks</code>
+                <strong>{overallPoints == null || mathPoints == null || diversityPoints == null ? "Required" : `${formatScore(overallPoints)} + ${formatScore(mathPoints)} + ${formatScore(diversityPoints)} = ${formatScore(profilePoints)} / 30`}</strong>
+              </div>
+              <p>This website currently uses a direct linear planning conversion for academic percentages. These profile marks are estimates and are not an official IIMB standardisation result.</p>
+            </div>
+          </details>
         </>
       )}
+
+      <aside className="ug-estimate-disclaimers" aria-label="Important estimation disclaimers">
+        <strong>Important estimation disclaimers</strong>
+        <ul>
+          <li>The current exam is modeled as 135 minutes, which is 15 minutes longer than the historical 120-minute format. The additional time may change attempt rates, score distributions and actual category cutoffs.</li>
+          <li>This year&apos;s expected raw-score cutoff is a planning estimate calculated as the last raw-score cutoff × 1.125 and rounded to the nearest whole number. It is not an IIM Bangalore published cutoff.</li>
+          <li>The displayed target is the higher of the student&apos;s profile-generated raw score and the estimated category cutoff. The Safe Score adds 5% and is capped at 180.</li>
+          <li>Paper difficulty, standardisation, applicant performance, reservation rules, sectional requirements and later official updates can change the score required for an interview call.</li>
+          <li>These figures are guidance estimates only and do not guarantee eligibility, shortlisting or an interview call.</li>
+        </ul>
+      </aside>
 
     </section>
   );

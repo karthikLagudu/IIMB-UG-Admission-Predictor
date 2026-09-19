@@ -167,7 +167,7 @@ export interface IimbUgPolicyConfig {
     earliestEligibleDob: string;
     class10Minimum: number;
     class10OverallPlanningMinimum: number;
-    primaryInterpretation: "SITE_OVERALL_38_4_AND_MATH_60";
+    primaryInterpretation: "SITE_OVERALL_60_AND_MATH_60";
     alternateInterpretation: "CYCLE_2027_PROCEDURE";
     requireMathClass11: boolean;
     requireMathClass12: boolean;
